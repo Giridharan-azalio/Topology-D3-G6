@@ -9,10 +9,6 @@ that the topology tab was painfully heavy — it would climb past **1 GB of memo
 sit at **~117% CPU**, and on the full network it would just show a **black screen**
 and never finish loading. The browser tab would keep spinning forever.
 
-My first assumption was that we had a **bug in our own code** — that I'd wired G6 up
-wrong, or was leaking something. So I decided to actually prove it one way or the
-other instead of guessing.
-
 ## What I did to test it
 
 To isolate the engine from everything else, I **recreated the exact same topology
@@ -56,8 +52,7 @@ This lined up perfectly with what I'd already seen in the real browser's task ma
 
 ## What I actually learned (I was partly wrong)
 
-
-The real reason is the way the two libraries work:
+The cause isn't a bug in our code — it's simply how the two libraries work under the hood:
 
 - **D3** draws plain SVG and lets the browser manage it, so it stays light even with
   4,374 nodes.
@@ -89,7 +84,7 @@ to get there. So this is a **scaling** problem, not "G6 is broken":
 
 ## Anyone can reproduce this
 
-**Respository Link** : 
+**Repository Link** : https://github.com/Giridharan-azalio/Topology-D3-G6
 ```bash
 cd "Topology-views 1/bench"
 npm install
@@ -100,4 +95,3 @@ It loads the real D3 and G6 pages unmodified, only injecting a measurement probe
 prints the comparison above. Raw numbers are in `bench/results.json` and the
 screenshots are in `bench/shots/`.
 
-*— Investigation done on 2026-06-04, Chrome 148, 20-second window per run.*
