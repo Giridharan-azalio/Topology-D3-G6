@@ -1,0 +1,1532 @@
+[
+{
+"city": "Mumbai",
+"district": "Mumbai",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.076,
+"lon": 72.8777,
+"tier": 1
+},
+{
+"city": "Delhi",
+"district": "New Delhi",
+"state": "Delhi",
+"region": "North",
+"lat": 28.6139,
+"lon": 77.209,
+"tier": 1
+},
+{
+"city": "Bangalore",
+"district": "Bengaluru Urban",
+"state": "Karnataka",
+"region": "South",
+"lat": 12.9716,
+"lon": 77.5946,
+"tier": 1
+},
+{
+"city": "Hyderabad",
+"district": "Hyderabad",
+"state": "Telangana",
+"region": "South",
+"lat": 17.385,
+"lon": 78.4867,
+"tier": 1
+},
+{
+"city": "Chennai",
+"district": "Chennai",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 13.0827,
+"lon": 80.2707,
+"tier": 1
+},
+{
+"city": "Kolkata",
+"district": "Kolkata",
+"state": "West Bengal",
+"region": "East",
+"lat": 22.5726,
+"lon": 88.3639,
+"tier": 1
+},
+{
+"city": "Pune",
+"district": "Pune",
+"state": "Maharashtra",
+"region": "West",
+"lat": 18.5204,
+"lon": 73.8567,
+"tier": 1
+},
+{
+"city": "Ahmedabad",
+"district": "Ahmedabad",
+"state": "Gujarat",
+"region": "West",
+"lat": 23.0225,
+"lon": 72.5714,
+"tier": 1
+},
+{
+"city": "Jaipur",
+"district": "Jaipur",
+"state": "Rajasthan",
+"region": "North",
+"lat": 26.9124,
+"lon": 75.7873,
+"tier": 1
+},
+{
+"city": "Lucknow",
+"district": "Lucknow",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 26.8467,
+"lon": 80.9462,
+"tier": 1
+},
+{
+"city": "Kanpur",
+"district": "Kanpur Nagar",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 26.4499,
+"lon": 80.3319,
+"tier": 2
+},
+{
+"city": "Nagpur",
+"district": "Nagpur",
+"state": "Maharashtra",
+"region": "West",
+"lat": 21.1458,
+"lon": 79.0882,
+"tier": 2
+},
+{
+"city": "Visakhapatnam",
+"district": "Visakhapatnam",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 17.6868,
+"lon": 83.2185,
+"tier": 2
+},
+{
+"city": "Indore",
+"district": "Indore",
+"state": "Madhya Pradesh",
+"region": "Central",
+"lat": 22.7196,
+"lon": 75.8577,
+"tier": 2
+},
+{
+"city": "Thane",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.2183,
+"lon": 72.9781,
+"tier": 2
+},
+{
+"city": "Bhopal",
+"district": "Bhopal",
+"state": "Madhya Pradesh",
+"region": "Central",
+"lat": 23.2599,
+"lon": 77.4126,
+"tier": 2
+},
+{
+"city": "Patna",
+"district": "Patna",
+"state": "Bihar",
+"region": "East",
+"lat": 25.5941,
+"lon": 85.1376,
+"tier": 2
+},
+{
+"city": "Vadodara",
+"district": "Vadodara",
+"state": "Gujarat",
+"region": "West",
+"lat": 22.3072,
+"lon": 73.1812,
+"tier": 2
+},
+{
+"city": "Ghaziabad",
+"district": "Ghaziabad",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.6692,
+"lon": 77.4538,
+"tier": 2
+},
+{
+"city": "Ludhiana",
+"district": "Ludhiana",
+"state": "Punjab",
+"region": "North",
+"lat": 30.901,
+"lon": 75.8573,
+"tier": 2
+},
+{
+"city": "Agra",
+"district": "Agra",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.1767,
+"lon": 78.0081,
+"tier": 2
+},
+{
+"city": "Nashik",
+"district": "Nashik",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.9975,
+"lon": 73.7898,
+"tier": 2
+},
+{
+"city": "Faridabad",
+"district": "Faridabad",
+"state": "Haryana",
+"region": "North",
+"lat": 28.4089,
+"lon": 77.3178,
+"tier": 2
+},
+{
+"city": "Meerut",
+"district": "Meerut",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.9845,
+"lon": 77.7064,
+"tier": 2
+},
+{
+"city": "Rajkot",
+"district": "Rajkot",
+"state": "Gujarat",
+"region": "West",
+"lat": 22.3039,
+"lon": 70.8022,
+"tier": 2
+},
+{
+"city": "Kalyan",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.2437,
+"lon": 73.1355,
+"tier": 2
+},
+{
+"city": "Varanasi",
+"district": "Varanasi",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 25.3176,
+"lon": 82.9739,
+"tier": 2
+},
+{
+"city": "Srinagar",
+"district": "Srinagar",
+"state": "Jammu and Kashmir",
+"region": "North",
+"lat": 34.0837,
+"lon": 74.7973,
+"tier": 2
+},
+{
+"city": "Aurangabad",
+"district": "Aurangabad",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.8762,
+"lon": 75.3433,
+"tier": 2
+},
+{
+"city": "Dhanbad",
+"district": "Dhanbad",
+"state": "Jharkhand",
+"region": "East",
+"lat": 23.7957,
+"lon": 86.4304,
+"tier": 2
+},
+{
+"city": "Amritsar",
+"district": "Amritsar",
+"state": "Punjab",
+"region": "North",
+"lat": 31.634,
+"lon": 74.8723,
+"tier": 2
+},
+{
+"city": "Navi Mumbai",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.033,
+"lon": 73.0297,
+"tier": 2
+},
+{
+"city": "Allahabad",
+"district": "Prayagraj",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 25.4358,
+"lon": 81.8463,
+"tier": 2
+},
+{
+"city": "Howrah",
+"district": "Howrah",
+"state": "West Bengal",
+"region": "East",
+"lat": 22.5958,
+"lon": 88.2636,
+"tier": 2
+},
+{
+"city": "Ranchi",
+"district": "Ranchi",
+"state": "Jharkhand",
+"region": "East",
+"lat": 23.3441,
+"lon": 85.3096,
+"tier": 2
+},
+{
+"city": "Gwalior",
+"district": "Gwalior",
+"state": "Madhya Pradesh",
+"region": "Central",
+"lat": 26.2183,
+"lon": 78.1828,
+"tier": 2
+},
+{
+"city": "Jabalpur",
+"district": "Jabalpur",
+"state": "Madhya Pradesh",
+"region": "Central",
+"lat": 23.1815,
+"lon": 79.9864,
+"tier": 2
+},
+{
+"city": "Coimbatore",
+"district": "Coimbatore",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 11.0168,
+"lon": 76.9558,
+"tier": 2
+},
+{
+"city": "Vijayawada",
+"district": "Krishna",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 16.5062,
+"lon": 80.648,
+"tier": 2
+},
+{
+"city": "Jodhpur",
+"district": "Jodhpur",
+"state": "Rajasthan",
+"region": "North",
+"lat": 26.2389,
+"lon": 73.0243,
+"tier": 2
+},
+{
+"city": "Madurai",
+"district": "Madurai",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 9.9252,
+"lon": 78.1198,
+"tier": 2
+},
+{
+"city": "Raipur",
+"district": "Raipur",
+"state": "Chhattisgarh",
+"region": "Central",
+"lat": 21.2514,
+"lon": 81.6296,
+"tier": 2
+},
+{
+"city": "Kota",
+"district": "Kota",
+"state": "Rajasthan",
+"region": "North",
+"lat": 25.2138,
+"lon": 75.8648,
+"tier": 2
+},
+{
+"city": "Chandigarh",
+"district": "Chandigarh",
+"state": "Chandigarh",
+"region": "North",
+"lat": 30.7333,
+"lon": 76.7794,
+"tier": 2
+},
+{
+"city": "Guwahati",
+"district": "Kamrup Metro",
+"state": "Assam",
+"region": "Northeast",
+"lat": 26.1445,
+"lon": 91.7362,
+"tier": 2
+},
+{
+"city": "Solapur",
+"district": "Solapur",
+"state": "Maharashtra",
+"region": "West",
+"lat": 17.6599,
+"lon": 75.9064,
+"tier": 3
+},
+{
+"city": "Hubli",
+"district": "Dharwad",
+"state": "Karnataka",
+"region": "South",
+"lat": 15.3647,
+"lon": 75.124,
+"tier": 3
+},
+{
+"city": "Mysuru",
+"district": "Mysuru",
+"state": "Karnataka",
+"region": "South",
+"lat": 12.2958,
+"lon": 76.6394,
+"tier": 3
+},
+{
+"city": "Tiruchirappalli",
+"district": "Tiruchirappalli",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 10.7905,
+"lon": 78.7047,
+"tier": 3
+},
+{
+"city": "Bareilly",
+"district": "Bareilly",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.367,
+"lon": 79.4304,
+"tier": 3
+},
+{
+"city": "Aligarh",
+"district": "Aligarh",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.8974,
+"lon": 78.088,
+"tier": 3
+},
+{
+"city": "Moradabad",
+"district": "Moradabad",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.8389,
+"lon": 78.7768,
+"tier": 3
+},
+{
+"city": "Mysore",
+"district": "Mysuru",
+"state": "Karnataka",
+"region": "South",
+"lat": 12.2958,
+"lon": 76.6394,
+"tier": 3
+},
+{
+"city": "Tiruppur",
+"district": "Tiruppur",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 11.1085,
+"lon": 77.3411,
+"tier": 3
+},
+{
+"city": "Gurgaon",
+"district": "Gurugram",
+"state": "Haryana",
+"region": "North",
+"lat": 28.4595,
+"lon": 77.0266,
+"tier": 2
+},
+{
+"city": "Aligarh",
+"district": "Aligarh",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.8974,
+"lon": 78.088,
+"tier": 3
+},
+{
+"city": "Bhubaneswar",
+"district": "Khordha",
+"state": "Odisha",
+"region": "East",
+"lat": 20.2961,
+"lon": 85.8245,
+"tier": 2
+},
+{
+"city": "Salem",
+"district": "Salem",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 11.6643,
+"lon": 78.146,
+"tier": 3
+},
+{
+"city": "Mira-Bhayandar",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.2952,
+"lon": 72.8544,
+"tier": 3
+},
+{
+"city": "Warangal",
+"district": "Warangal Urban",
+"state": "Telangana",
+"region": "South",
+"lat": 17.9689,
+"lon": 79.5941,
+"tier": 3
+},
+{
+"city": "Thiruvananthapuram",
+"district": "Thiruvananthapuram",
+"state": "Kerala",
+"region": "South",
+"lat": 8.5241,
+"lon": 76.9366,
+"tier": 2
+},
+{
+"city": "Guntur",
+"district": "Guntur",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 16.3067,
+"lon": 80.4365,
+"tier": 3
+},
+{
+"city": "Bhiwandi",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.3002,
+"lon": 73.0635,
+"tier": 3
+},
+{
+"city": "Saharanpur",
+"district": "Saharanpur",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 29.968,
+"lon": 77.5552,
+"tier": 3
+},
+{
+"city": "Gorakhpur",
+"district": "Gorakhpur",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 26.7606,
+"lon": 83.3732,
+"tier": 3
+},
+{
+"city": "Bikaner",
+"district": "Bikaner",
+"state": "Rajasthan",
+"region": "North",
+"lat": 28.0229,
+"lon": 73.3119,
+"tier": 3
+},
+{
+"city": "Amravati",
+"district": "Amravati",
+"state": "Maharashtra",
+"region": "West",
+"lat": 20.9374,
+"lon": 77.7796,
+"tier": 3
+},
+{
+"city": "Noida",
+"district": "Gautam Buddha Nagar",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.5355,
+"lon": 77.391,
+"tier": 2
+},
+{
+"city": "Jamshedpur",
+"district": "East Singhbhum",
+"state": "Jharkhand",
+"region": "East",
+"lat": 22.8046,
+"lon": 86.2029,
+"tier": 2
+},
+{
+"city": "Bhilai",
+"district": "Durg",
+"state": "Chhattisgarh",
+"region": "Central",
+"lat": 21.1938,
+"lon": 81.3509,
+"tier": 3
+},
+{
+"city": "Cuttack",
+"district": "Cuttack",
+"state": "Odisha",
+"region": "East",
+"lat": 20.4625,
+"lon": 85.883,
+"tier": 3
+},
+{
+"city": "Firozabad",
+"district": "Firozabad",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.1591,
+"lon": 78.3957,
+"tier": 3
+},
+{
+"city": "Kochi",
+"district": "Ernakulam",
+"state": "Kerala",
+"region": "South",
+"lat": 9.9312,
+"lon": 76.2673,
+"tier": 2
+},
+{
+"city": "Bhavnagar",
+"district": "Bhavnagar",
+"state": "Gujarat",
+"region": "West",
+"lat": 21.7645,
+"lon": 72.1519,
+"tier": 3
+},
+{
+"city": "Dehradun",
+"district": "Dehradun",
+"state": "Uttarakhand",
+"region": "North",
+"lat": 30.3165,
+"lon": 78.0322,
+"tier": 2
+},
+{
+"city": "Durgapur",
+"district": "Paschim Bardhaman",
+"state": "West Bengal",
+"region": "East",
+"lat": 23.5204,
+"lon": 87.3119,
+"tier": 3
+},
+{
+"city": "Asansol",
+"district": "Paschim Bardhaman",
+"state": "West Bengal",
+"region": "East",
+"lat": 23.6739,
+"lon": 86.9524,
+"tier": 3
+},
+{
+"city": "Nanded",
+"district": "Nanded",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.1383,
+"lon": 77.321,
+"tier": 3
+},
+{
+"city": "Kolhapur",
+"district": "Kolhapur",
+"state": "Maharashtra",
+"region": "West",
+"lat": 16.705,
+"lon": 74.2433,
+"tier": 3
+},
+{
+"city": "Ajmer",
+"district": "Ajmer",
+"state": "Rajasthan",
+"region": "North",
+"lat": 26.4499,
+"lon": 74.6399,
+"tier": 3
+},
+{
+"city": "Akola",
+"district": "Akola",
+"state": "Maharashtra",
+"region": "West",
+"lat": 20.7002,
+"lon": 77.0082,
+"tier": 3
+},
+{
+"city": "Gulbarga",
+"district": "Kalaburagi",
+"state": "Karnataka",
+"region": "South",
+"lat": 17.3297,
+"lon": 76.8343,
+"tier": 3
+},
+{
+"city": "Jamnagar",
+"district": "Jamnagar",
+"state": "Gujarat",
+"region": "West",
+"lat": 22.4707,
+"lon": 70.0577,
+"tier": 3
+},
+{
+"city": "Ujjain",
+"district": "Ujjain",
+"state": "Madhya Pradesh",
+"region": "Central",
+"lat": 23.1765,
+"lon": 75.7885,
+"tier": 3
+},
+{
+"city": "Loni",
+"district": "Ghaziabad",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 28.7404,
+"lon": 77.289,
+"tier": 3
+},
+{
+"city": "Siliguri",
+"district": "Darjeeling",
+"state": "West Bengal",
+"region": "East",
+"lat": 26.7271,
+"lon": 88.3953,
+"tier": 3
+},
+{
+"city": "Jhansi",
+"district": "Jhansi",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 25.4484,
+"lon": 78.5685,
+"tier": 3
+},
+{
+"city": "Ulhasnagar",
+"district": "Thane",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.2215,
+"lon": 73.1645,
+"tier": 3
+},
+{
+"city": "Jammu",
+"district": "Jammu",
+"state": "Jammu and Kashmir",
+"region": "North",
+"lat": 32.7266,
+"lon": 74.857,
+"tier": 3
+},
+{
+"city": "Sangli",
+"district": "Sangli",
+"state": "Maharashtra",
+"region": "West",
+"lat": 16.8524,
+"lon": 74.5815,
+"tier": 3
+},
+{
+"city": "Mangalore",
+"district": "Dakshina Kannada",
+"state": "Karnataka",
+"region": "South",
+"lat": 12.9141,
+"lon": 74.856,
+"tier": 2
+},
+{
+"city": "Erode",
+"district": "Erode",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 11.341,
+"lon": 77.7172,
+"tier": 3
+},
+{
+"city": "Belgaum",
+"district": "Belgaum",
+"state": "Karnataka",
+"region": "South",
+"lat": 15.8497,
+"lon": 74.4977,
+"tier": 3
+},
+{
+"city": "Ambattur",
+"district": "Tiruvallur",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 13.0982,
+"lon": 80.161,
+"tier": 3
+},
+{
+"city": "Tirunelveli",
+"district": "Tirunelveli",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 8.7139,
+"lon": 77.7567,
+"tier": 3
+},
+{
+"city": "Malegaon",
+"district": "Nashik",
+"state": "Maharashtra",
+"region": "West",
+"lat": 20.5579,
+"lon": 74.5287,
+"tier": 3
+},
+{
+"city": "Gaya",
+"district": "Gaya",
+"state": "Bihar",
+"region": "East",
+"lat": 24.7914,
+"lon": 85.0002,
+"tier": 3
+},
+{
+"city": "Jalgaon",
+"district": "Jalgaon",
+"state": "Maharashtra",
+"region": "West",
+"lat": 21.0077,
+"lon": 75.5626,
+"tier": 3
+},
+{
+"city": "Udaipur",
+"district": "Udaipur",
+"state": "Rajasthan",
+"region": "North",
+"lat": 24.5854,
+"lon": 73.7125,
+"tier": 3
+},
+{
+"city": "Maheshtala",
+"district": "South 24 Parganas",
+"state": "West Bengal",
+"region": "East",
+"lat": 22.5106,
+"lon": 88.2479,
+"tier": 3
+},
+{
+"city": "Davanagere",
+"district": "Davanagere",
+"state": "Karnataka",
+"region": "South",
+"lat": 14.4644,
+"lon": 75.9218,
+"tier": 3
+},
+{
+"city": "Kozhikode",
+"district": "Kozhikode",
+"state": "Kerala",
+"region": "South",
+"lat": 11.2588,
+"lon": 75.7804,
+"tier": 3
+},
+{
+"city": "Akbarpur",
+"district": "Ambedkar Nagar",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 26.4288,
+"lon": 82.5379,
+"tier": 3
+},
+{
+"city": "Kurnool",
+"district": "Kurnool",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 15.8281,
+"lon": 78.0373,
+"tier": 3
+},
+{
+"city": "Bokaro Steel City",
+"district": "Bokaro",
+"state": "Jharkhand",
+"region": "East",
+"lat": 23.6693,
+"lon": 86.1511,
+"tier": 3
+},
+{
+"city": "Rajahmundry",
+"district": "East Godavari",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 17.0005,
+"lon": 81.804,
+"tier": 3
+},
+{
+"city": "Ballari",
+"district": "Ballari",
+"state": "Karnataka",
+"region": "South",
+"lat": 15.1394,
+"lon": 76.9214,
+"tier": 3
+},
+{
+"city": "Agartala",
+"district": "West Tripura",
+"state": "Tripura",
+"region": "Northeast",
+"lat": 23.8315,
+"lon": 91.2868,
+"tier": 3
+},
+{
+"city": "Bhagalpur",
+"district": "Bhagalpur",
+"state": "Bihar",
+"region": "East",
+"lat": 25.2425,
+"lon": 86.9842,
+"tier": 3
+},
+{
+"city": "Latur",
+"district": "Latur",
+"state": "Maharashtra",
+"region": "West",
+"lat": 18.4088,
+"lon": 76.5604,
+"tier": 3
+},
+{
+"city": "Dhule",
+"district": "Dhule",
+"state": "Maharashtra",
+"region": "West",
+"lat": 20.9042,
+"lon": 74.7749,
+"tier": 3
+},
+{
+"city": "Rohtak",
+"district": "Rohtak",
+"state": "Haryana",
+"region": "North",
+"lat": 28.8955,
+"lon": 76.6066,
+"tier": 3
+},
+{
+"city": "Korba",
+"district": "Korba",
+"state": "Chhattisgarh",
+"region": "Central",
+"lat": 22.3595,
+"lon": 82.7501,
+"tier": 3
+},
+{
+"city": "Bhilwara",
+"district": "Bhilwara",
+"state": "Rajasthan",
+"region": "North",
+"lat": 25.3463,
+"lon": 74.6364,
+"tier": 3
+},
+{
+"city": "Brahmapur",
+"district": "Ganjam",
+"state": "Odisha",
+"region": "East",
+"lat": 19.3149,
+"lon": 84.7941,
+"tier": 3
+},
+{
+"city": "Muzaffarpur",
+"district": "Muzaffarpur",
+"state": "Bihar",
+"region": "East",
+"lat": 26.1209,
+"lon": 85.3647,
+"tier": 3
+},
+{
+"city": "Ahmednagar",
+"district": "Ahmednagar",
+"state": "Maharashtra",
+"region": "West",
+"lat": 19.0948,
+"lon": 74.748,
+"tier": 3
+},
+{
+"city": "Mathura",
+"district": "Mathura",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.4924,
+"lon": 77.6737,
+"tier": 3
+},
+{
+"city": "Kollam",
+"district": "Kollam",
+"state": "Kerala",
+"region": "South",
+"lat": 8.8932,
+"lon": 76.6141,
+"tier": 3
+},
+{
+"city": "Avadi",
+"district": "Tiruvallur",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 13.1147,
+"lon": 80.1098,
+"tier": 3
+},
+{
+"city": "Kadapa",
+"district": "YSR Kadapa",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 14.4673,
+"lon": 78.8242,
+"tier": 3
+},
+{
+"city": "Anantapur",
+"district": "Anantapur",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 14.6819,
+"lon": 77.6006,
+"tier": 3
+},
+{
+"city": "Kamarhati",
+"district": "North 24 Parganas",
+"state": "West Bengal",
+"region": "East",
+"lat": 22.67,
+"lon": 88.37,
+"tier": 3
+},
+{
+"city": "Bilaspur",
+"district": "Bilaspur",
+"state": "Chhattisgarh",
+"region": "Central",
+"lat": 22.0796,
+"lon": 82.1391,
+"tier": 3
+},
+{
+"city": "Sambalpur",
+"district": "Sambalpur",
+"state": "Odisha",
+"region": "East",
+"lat": 21.4669,
+"lon": 83.9756,
+"tier": 3
+},
+{
+"city": "Shahjahanpur",
+"district": "Shahjahanpur",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.8809,
+"lon": 79.9094,
+"tier": 3
+},
+{
+"city": "Satara",
+"district": "Satara",
+"state": "Maharashtra",
+"region": "West",
+"lat": 17.6805,
+"lon": 74.0183,
+"tier": 3
+},
+{
+"city": "Bidar",
+"district": "Bidar",
+"state": "Karnataka",
+"region": "South",
+"lat": 17.9133,
+"lon": 77.5301,
+"tier": 3
+},
+{
+"city": "Tiruvottiyur",
+"district": "Tiruvallur",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 13.1635,
+"lon": 80.3019,
+"tier": 3
+},
+{
+"city": "Puducherry",
+"district": "Puducherry",
+"state": "Puducherry",
+"region": "South",
+"lat": 11.9416,
+"lon": 79.8083,
+"tier": 3
+},
+{
+"city": "Karnal",
+"district": "Karnal",
+"state": "Haryana",
+"region": "North",
+"lat": 29.6857,
+"lon": 76.9905,
+"tier": 3
+},
+{
+"city": "Bathinda",
+"district": "Bathinda",
+"state": "Punjab",
+"region": "North",
+"lat": 30.211,
+"lon": 74.9455,
+"tier": 3
+},
+{
+"city": "Shimla",
+"district": "Shimla",
+"state": "Himachal Pradesh",
+"region": "North",
+"lat": 31.1048,
+"lon": 77.1734,
+"tier": 3
+},
+{
+"city": "Aizawl",
+"district": "Aizawl",
+"state": "Mizoram",
+"region": "Northeast",
+"lat": 23.7271,
+"lon": 92.7176,
+"tier": 3
+},
+{
+"city": "Itanagar",
+"district": "Papum Pare",
+"state": "Arunachal Pradesh",
+"region": "Northeast",
+"lat": 27.1024,
+"lon": 93.6053,
+"tier": 3
+},
+{
+"city": "Kohima",
+"district": "Kohima",
+"state": "Nagaland",
+"region": "Northeast",
+"lat": 25.6747,
+"lon": 94.1086,
+"tier": 3
+},
+{
+"city": "Imphal",
+"district": "Imphal West",
+"state": "Manipur",
+"region": "Northeast",
+"lat": 24.817,
+"lon": 93.9368,
+"tier": 3
+},
+{
+"city": "Shillong",
+"district": "East Khasi Hills",
+"state": "Meghalaya",
+"region": "Northeast",
+"lat": 25.5788,
+"lon": 91.8933,
+"tier": 3
+},
+{
+"city": "Gangtok",
+"district": "East Sikkim",
+"state": "Sikkim",
+"region": "Northeast",
+"lat": 27.3389,
+"lon": 88.6065,
+"tier": 3
+},
+{
+"city": "Port Blair",
+"district": "Cuddalore",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 11.748,
+"lon": 79.7714,
+"tier": 3
+},
+{
+"city": "Panaji",
+"district": "North Goa",
+"state": "Goa",
+"region": "West",
+"lat": 15.4909,
+"lon": 73.8278,
+"tier": 3
+},
+{
+"city": "Margao",
+"district": "South Goa",
+"state": "Goa",
+"region": "West",
+"lat": 15.2832,
+"lon": 73.9862,
+"tier": 3
+},
+{
+"city": "Dharamshala",
+"district": "Kangra",
+"state": "Himachal Pradesh",
+"region": "North",
+"lat": 32.219,
+"lon": 76.3234,
+"tier": 3
+},
+{
+"city": "Tirupati",
+"district": "Chittoor",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 13.6288,
+"lon": 79.4192,
+"tier": 3
+},
+{
+"city": "Mathura",
+"district": "Mathura",
+"state": "Uttar Pradesh",
+"region": "North",
+"lat": 27.4924,
+"lon": 77.6737,
+"tier": 3
+},
+{
+"city": "Roorkee",
+"district": "Haridwar",
+"state": "Uttarakhand",
+"region": "North",
+"lat": 29.8543,
+"lon": 77.888,
+"tier": 3
+},
+{
+"city": "Karaikudi",
+"district": "Sivaganga",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 10.0719,
+"lon": 78.7747,
+"tier": 3
+},
+{
+"city": "Thoothukudi",
+"district": "Thoothukudi",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 8.7642,
+"lon": 78.1348,
+"tier": 3
+},
+{
+"city": "Nellore",
+"district": "Nellore",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 14.4426,
+"lon": 79.9865,
+"tier": 3
+},
+{
+"city": "Vellore",
+"district": "Vellore",
+"state": "Tamil Nadu",
+"region": "South",
+"lat": 12.9165,
+"lon": 79.1325,
+"tier": 3
+},
+{
+"city": "Patiala",
+"district": "Patiala",
+"state": "Punjab",
+"region": "North",
+"lat": 30.3398,
+"lon": 76.3869,
+"tier": 3
+},
+{
+"city": "Jalandhar",
+"district": "Jalandhar",
+"state": "Punjab",
+"region": "North",
+"lat": 31.326,
+"lon": 75.5762,
+"tier": 3
+},
+{
+"city": "Hisar",
+"district": "Hisar",
+"state": "Haryana",
+"region": "North",
+"lat": 29.1492,
+"lon": 75.7217,
+"tier": 3
+},
+{
+"city": "Panipat",
+"district": "Panipat",
+"state": "Haryana",
+"region": "North",
+"lat": 29.3909,
+"lon": 76.9635,
+"tier": 3
+},
+{
+"city": "Ambala",
+"district": "Ambala",
+"state": "Haryana",
+"region": "North",
+"lat": 30.3782,
+"lon": 76.7767,
+"tier": 3
+},
+{
+"city": "Yamunanagar",
+"district": "Yamunanagar",
+"state": "Haryana",
+"region": "North",
+"lat": 30.129,
+"lon": 77.2674,
+"tier": 3
+},
+{
+"city": "Dibrugarh",
+"district": "Dibrugarh",
+"state": "Assam",
+"region": "Northeast",
+"lat": 27.4728,
+"lon": 94.912,
+"tier": 3
+},
+{
+"city": "Silchar",
+"district": "Cachar",
+"state": "Assam",
+"region": "Northeast",
+"lat": 24.8333,
+"lon": 92.7789,
+"tier": 3
+},
+{
+"city": "Anand",
+"district": "Anand",
+"state": "Gujarat",
+"region": "West",
+"lat": 22.5645,
+"lon": 72.9289,
+"tier": 3
+},
+{
+"city": "Nadiad",
+"district": "Kheda",
+"state": "Gujarat",
+"region": "West",
+"lat": 22.6939,
+"lon": 72.8634,
+"tier": 3
+},
+{
+"city": "Surat",
+"district": "Surat",
+"state": "Gujarat",
+"region": "West",
+"lat": 21.1702,
+"lon": 72.8311,
+"tier": 2
+},
+{
+"city": "Bhuj",
+"district": "Kutch",
+"state": "Gujarat",
+"region": "West",
+"lat": 23.253,
+"lon": 69.6693,
+"tier": 3
+},
+{
+"city": "Junagadh",
+"district": "Junagadh",
+"state": "Gujarat",
+"region": "West",
+"lat": 21.5222,
+"lon": 70.4579,
+"tier": 3
+},
+{
+"city": "Kakinada",
+"district": "East Godavari",
+"state": "Andhra Pradesh",
+"region": "South",
+"lat": 16.9891,
+"lon": 82.2475,
+"tier": 3
+},
+{
+"city": "Rourkela",
+"district": "Sundargarh",
+"state": "Odisha",
+"region": "East",
+"lat": 22.2604,
+"lon": 84.8536,
+"tier": 3
+},
+{
+"city": "Ratnagiri",
+"district": "Ratnagiri",
+"state": "Maharashtra",
+"region": "West",
+"lat": 16.9944,
+"lon": 73.3,
+"tier": 3
+},
+{
+"city": "Gandhinagar",
+"district": "Gandhinagar",
+"state": "Gujarat",
+"region": "West",
+"lat": 23.2156,
+"lon": 72.6369,
+"tier": 2
+},
+{
+"city": "Thrissur",
+"district": "Thrissur",
+"state": "Kerala",
+"region": "South",
+"lat": 10.5276,
+"lon": 76.2144,
+"tier": 3
+},
+{
+"city": "Pathankot",
+"district": "Pathankot",
+"state": "Punjab",
+"region": "North",
+"lat": 32.2746,
+"lon": 75.6521,
+"tier": 3
+},
+{
+"city": "Tinsukia",
+"district": "Tinsukia",
+"state": "Assam",
+"region": "Northeast",
+"lat": 27.4885,
+"lon": 95.3608,
+"tier": 3
+}
+]

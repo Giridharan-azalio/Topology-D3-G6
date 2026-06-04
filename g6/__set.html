@@ -1,0 +1,5 @@
+<!doctype html><script>
+sessionStorage.setItem('topology.view', (location.hash.slice(1).split(':')[0])||'full');
+sessionStorage.setItem('topology.layout', (location.hash.split(':')[1])||'force');
+location.replace('index.html');
+</script>

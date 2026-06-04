@@ -1,0 +1,1427 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>Huawei Topology — AntV G6</title>
+  <style>
+    html, body { margin: 0; height: 100%; font-family: -apple-system, "Segoe UI", Roboto, sans-serif; background: #f5f7fa; }
+    #app { position: fixed; inset: 0; display: grid; grid-template-columns: 280px 1fr; }
+    aside { background: #1f2937; color: #e5e7eb; padding: 14px 16px; overflow: auto; font-size: 12px; }
+    aside h2 { margin: 0 0 8px; font-size: 13px; letter-spacing: .04em; text-transform: uppercase; color: #9ca3af; }
+    aside .legend-row { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+    aside .legend-row .swatch { width: 20px; height: 4px; border-radius: 2px; }
+    aside .ctl { margin: 12px 0; }
+    aside label { display: block; margin-bottom: 4px; color: #d1d5db; }
+    aside input[type="range"] { width: 100%; }
+    aside .stat { color: #f9fafb; font-weight: 600; }
+    aside button { background: #374151; color: #f9fafb; border: 0; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+    aside button:hover { background: #4b5563; }
+    main { position: relative; overflow: hidden; }
+    /* G6 mounts its canvas here (replaces the D3 <svg>). */
+    #graph { position: absolute; inset: 0; }
+    #geo-map { position: absolute; inset: 0; display: none; background: #0b1220; }
+    #geo-map.active { display: block; }
+    #geo-legend { position: absolute; right: 16px; bottom: 16px; background: rgba(15,23,42,.92); color: #f1f5f9; font-size: 11px; padding: 12px 14px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.4); pointer-events: none; min-width: 230px; z-index: 1000; }
+    #geo-legend h4 { margin: 0 0 6px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #cbd5e1; }
+    #geo-legend .row { display: flex; align-items: center; gap: 10px; margin: 5px 0; }
+    #geo-legend .line-swatch { width: 24px; height: 3px; border-radius: 2px; }
+    #geo-legend .bubble { display: inline-block; border-radius: 50%; border: 1px solid rgba(255,255,255,0.7); flex-shrink: 0; }
+    #geo-filters { position: absolute; left: 16px; top: 16px; background: rgba(15,23,42,.92); color: #f1f5f9; font-size: 12px; padding: 12px 14px; border-radius: 8px; box-shadow: 0 4px 16px rgba(0,0,0,.4); min-width: 180px; z-index: 1000; }
+    #geo-filters h4 { margin: 0 0 8px; font-size: 11px; text-transform: uppercase; letter-spacing: .05em; color: #cbd5e1; }
+    #geo-filters label { display: flex; align-items: center; gap: 8px; margin: 4px 0; cursor: pointer; user-select: none; }
+    #geo-filters .swatch { display: inline-block; width: 12px; height: 12px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.7); }
+    #geo-filters input[type=checkbox] { accent-color: #2563eb; }
+    #geo-filters select { width: 100%; margin-top: 4px; padding: 4px 6px; border-radius: 4px; border: 1px solid #4b5563; background: #111827; color: #f9fafb; font-size: 11px; }
+    #geo-filters .count { color: #94a3b8; font-size: 10px; margin-left: auto; }
+
+    /* L2VPN service dashboard */
+    #l2vpn-dash { position: absolute; inset: 0; overflow: auto; padding: 20px; background: linear-gradient(180deg,#f8fafc 0%,#eef2f7 100%); display: none; }
+    #l2vpn-dash.active { display: block; }
+    #l2vpn-dash .svc-header { background: #ffffff; border-radius: 8px; padding: 18px 22px; box-shadow: 0 1px 3px rgba(0,0,0,.06); margin-bottom: 16px; display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; }
+    #l2vpn-dash .svc-header h1 { margin: 0 0 4px; font-size: 18px; color: #0f172a; }
+    #l2vpn-dash .svc-header .svc-sub { color: #64748b; font-size: 12px; }
+    #l2vpn-dash .badge { display: inline-block; padding: 3px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; margin-right: 6px; }
+    #l2vpn-dash .badge.ok { background: #dcfce7; color: #166534; }
+    #l2vpn-dash .badge.warn { background: #fef3c7; color: #92400e; }
+    #l2vpn-dash .badge.info { background: #dbeafe; color: #1e40af; }
+    #l2vpn-dash .badge.proto { background: #fce7f3; color: #9d174d; }
+    #l2vpn-dash .attr-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px 18px; font-size: 12px; margin-top: 10px; }
+    #l2vpn-dash .attr-grid > div { display: flex; flex-direction: column; }
+    #l2vpn-dash .attr-grid .k { color: #64748b; font-size: 10px; text-transform: uppercase; letter-spacing: .04em; }
+    #l2vpn-dash .attr-grid .v { color: #0f172a; font-weight: 500; word-break: break-all; }
+    #l2vpn-dash .body-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    #l2vpn-dash .card { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    #l2vpn-dash .card h2 { margin: 0 0 12px; font-size: 13px; color: #0f172a; text-transform: uppercase; letter-spacing: .04em; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    #l2vpn-dash .endpoint-card .ne-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+    #l2vpn-dash .endpoint-card .ne-header img { width: 36px; height: 36px; }
+    #l2vpn-dash .endpoint-card .ne-name { font-weight: 700; color: #0f172a; }
+    #l2vpn-dash .endpoint-card .ne-role { font-size: 10px; padding: 2px 6px; border-radius: 4px; background: #e0e7ff; color: #3730a3; margin-left: 6px; }
+    #l2vpn-dash .mini-map { background: #fff; border-radius: 8px; padding: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+    #l2vpn-dash .mini-map h2 { margin: 0 0 12px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: #0f172a; border-bottom: 2px solid #e2e8f0; padding-bottom: 8px; }
+    #l2vpn-dash .mini-map svg { width: 100%; height: 220px; }
+    #l2vpn-dash .transport-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    #l2vpn-dash .transport-table th { text-align: left; background: #f1f5f9; padding: 8px 10px; color: #475569; font-weight: 600; }
+    #l2vpn-dash .transport-table td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; vertical-align: top; }
+    #l2vpn-dash .transport-table tr.protect td { background: #fff7ed; }
+    #l2vpn-dash .pill-list { display: flex; flex-wrap: wrap; gap: 6px; }
+    #l2vpn-dash .pill { background: #f1f5f9; color: #334155; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-family: ui-monospace, monospace; }
+    .filter-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background: #374151; margin: 2px 4px 2px 0; cursor: pointer; user-select: none; color: #fff; }
+    .filter-pill.off { opacity: .35; }
+    .tooltip { position: absolute; pointer-events: none; background: #111827; color: #f9fafb; padding: 6px 9px; border-radius: 6px; font-size: 11px; line-height: 1.45; box-shadow: 0 4px 16px rgba(0,0,0,.4); opacity: 0; transition: opacity .12s; max-width: 320px; z-index: 99999; }
+    /* G6 tooltip plugin container — neutralise the default white card so our
+       dark inline-styled content reads as the original D3 tooltip. */
+    .g6-tooltip, .tooltip-container { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
+  </style>
+  <script src="https://unpkg.com/@antv/g6@5.1.1/dist/g6.min.js"></script>
+  <script src="https://unpkg.com/@antv/l7@2.21.10/dist/l7.js"></script>
+  <script src="https://unpkg.com/@antv/l7-maps@2.21.10/dist/l7-maps.min.js"></script>
+  <script src="topology-full.js"></script>
+  <script src="topology-core.js"></script>
+  <script src="topology-e2e.js"></script>
+  <script src="topology-l2vpn.js"></script>
+  <script src="topology-vpls.js"></script>
+  <script src="topology-l3vpn.js"></script>
+  <script src="topology-gpon.js"></script>
+  <script src="topology-tunnel.js"></script>
+  <script src="topology-geo.js"></script>
+</head>
+<body>
+  <div id="app">
+    <aside>
+      <h2>Huawei Topology</h2>
+      <div class="ctl">
+        <label>View</label>
+        <select id="view-select" style="width:100%;padding:5px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:12px;">
+          <option value="full">Full network — every linked NE</option>
+          <option value="core">Core ring — NE40E / NetEngine only</option>
+          <option value="e2e">End-to-end — Core → AGG → OLT → ONT</option>
+          <option value="l2vpn">L2VPN service — 20 PWE3 services stacked</option>
+          <option value="vpls">VPLS service — 20 multipoint services stacked</option>
+          <option value="l3vpn">L3VPN service — BGP/MPLS IP-VPN with VRFs</option>
+          <option value="gpon">GPON service — 20 FTTH residential subscribers</option>
+          <option value="tunnel">MPLS-TE Tunnel — 20 transport LSPs</option>
+          <option value="geo">Geo Map — Tamil Nadu NE locations</option>
+        </select>
+      </div>
+      <div class="ctl">
+        <label>Region</label>
+        <select id="region-select" style="width:100%;padding:5px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:12px;">
+          <option value="">All regions</option>
+        </select>
+      </div>
+      <div class="ctl">
+        <label>Site <small style="color:#9ca3af">(hostname prefix — type to search)</small></label>
+        <input list="site-list" id="site-select" placeholder="All sites — type a 3-letter code" autocomplete="off"
+               style="width:100%;padding:5px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:12px;font-family:ui-monospace,monospace;"/>
+        <datalist id="site-list"></datalist>
+      </div>
+      <div class="ctl" id="layout-row" style="display:none">
+        <label>Layout</label>
+        <select id="layout-select" style="width:100%;padding:5px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:12px;">
+          <option value="force">Free force-directed</option>
+          <option value="tier">Tier-aligned force (CORE top → OLT bottom)</option>
+        </select>
+      </div>
+      <div>Showing: <span class="stat" id="stat-shown">—</span> / <span id="stat-nodes">—</span> nodes, <span class="stat" id="stat-shown-links">—</span> / <span id="stat-links">—</span> links</div>
+
+      <h2 style="margin-top:14px">Quick presets</h2>
+      <div class="ctl">
+        <button data-preset="core-ring">Core ring</button>
+        <button data-preset="core-agg">Core + AGG</button>
+        <button data-preset="agg-acc">AGG + ACC</button>
+        <button data-preset="rings-only">Rings only</button>
+        <button data-preset="all">Show all</button>
+      </div>
+
+      <h2 style="margin-top:14px">Roles <small style="color:#9ca3af">(click to toggle)</small></h2>
+      <div id="role-filter"></div>
+
+      <h2 style="margin-top:14px">Link types</h2>
+      <div id="link-filter"></div>
+
+      <h2 style="margin-top:14px">Ring isolation</h2>
+      <div class="ctl"><label><input id="hide-leaves" type="checkbox"/> Hide leaves (peel deg-1 iteratively)</label></div>
+      <div class="ctl"><label>k-core ≥ <span class="stat" id="v-kcore">1</span> <small style="color:#9ca3af">(2+ keeps only cycles)</small></label><input id="kcore" type="range" min="1" max="8" value="1"/></div>
+
+      <h2 style="margin-top:14px">Search</h2>
+      <div class="ctl"><input id="search" type="text" placeholder="hostname / IP contains…" style="width:100%;padding:4px 6px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:11px;"/></div>
+
+      <h2 style="margin-top:14px">Forces</h2>
+      <div class="ctl"><label>Charge <span class="stat" id="v-charge"></span></label><input id="charge" type="range" min="-2500" max="-30" value="-700"/></div>
+      <div class="ctl"><label>Link distance <span class="stat" id="v-dist"></span></label><input id="dist" type="range" min="20" max="400" value="120"/></div>
+      <div class="ctl"><label>Collide <span class="stat" id="v-coll"></span></label><input id="coll" type="range" min="20" max="180" value="60"/></div>
+      <div class="ctl"><label>Gravity <span class="stat" id="v-grav"></span></label><input id="grav" type="range" min="0" max="60" value="0"/></div>
+      <div class="ctl"><label><input id="show-port" type="checkbox"/> Show port labels</label></div>
+      <div class="ctl"><label><input id="show-label" type="checkbox" checked/> Show node labels</label></div>
+      <div class="ctl"><button id="freeze">Freeze layout</button> <button id="thaw">Re-energise</button></div>
+    </aside>
+    <main>
+      <div id="graph"></div>
+      <div class="tooltip" id="tip"></div>
+      <div id="l2vpn-dash"></div>
+      <div id="geo-map">
+        <div id="geo-filters">
+          <h4>Filter</h4>
+          <label><input type="checkbox" data-role="CORE" checked/><span class="swatch" style="background:#2563eb"></span>CORE<span class="count" id="cnt-CORE"></span></label>
+          <label><input type="checkbox" data-role="AGG" checked/><span class="swatch" style="background:#7c3aed"></span>AGG<span class="count" id="cnt-AGG"></span></label>
+          <label><input type="checkbox" data-role="OLT" checked/><span class="swatch" style="background:#0ea5e9"></span>OLT<span class="count" id="cnt-OLT"></span></label>
+          <label style="margin-top:8px"><input type="checkbox" id="show-labels" checked/>Hostname labels (CORE)</label>
+          <label><input type="checkbox" id="show-links" checked/>Show inter-NE links</label>
+          <h4 style="margin-top:10px">Search node</h4>
+          <input list="geo-search-list" id="geo-search" placeholder="hostname / IP / site code" autocomplete="off"
+                 style="width:100%;padding:5px 6px;border-radius:4px;border:1px solid #4b5563;background:#111827;color:#f9fafb;font-size:11px;font-family:ui-monospace,monospace"/>
+          <datalist id="geo-search-list"></datalist>
+          <div id="geo-search-msg" style="color:#94a3b8;font-size:10px;margin-top:4px;min-height:12px"></div>
+          <h4 style="margin-top:10px">State</h4>
+          <select id="geo-state-filter"><option value="">All states</option></select>
+        </div>
+        <div id="geo-legend">
+          <h4>Devices</h4>
+          <div class="row"><span class="bubble" style="background:#2563eb;width:18px;height:18px"></span>CORE — NE40E / NetEngine 8000</div>
+          <div class="row"><span class="bubble" style="background:#7c3aed;width:14px;height:14px"></span>AGG  — ATN950 / ATN910C-A</div>
+          <div class="row"><span class="bubble" style="background:#0ea5e9;width:10px;height:10px"></span>OLT  — MA5xxx GPON head-ends</div>
+          <h4 style="margin-top:10px">Links</h4>
+          <div class="row"><span class="line-swatch" style="background:#2563eb"></span>L2 Link</div>
+          <div class="row"><span class="line-swatch" style="background:#d97706"></span>IP Link</div>
+          <div class="row"><span class="line-swatch" style="background:#111111"></span>Fiber</div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+<script>
+const ROLE_COLOR = { CORE:"#2563eb", AGG:"#7c3aed", ACC:"#16a34a", OLT:"#0ea5e9", MSAN:"#64748b", ONU:"#0ea5e9", ONT:"#0ea5e9", L2SW:"#475569", L3SW:"#475569", GW:"#475569", CLOUD:"#94a3b8", RPS:"#9ca3af", OTHER:"#94a3b8", PWE3:"#dc2626", PW:"#f59e0b", TUNNEL:"#a855f7", SAP:"#0891b2", VSI:"#0e7490", VRF:"#0d9488", CUSTOMER:"#f97316" };
+const LINK_CLASS = { "L2 Link":"l2", "IP Link":"ip", "Fiber":"fib", "Dummy Link":"dum" };
+const LINK_COLOR = { "L2 Link":"#2563eb", "IP Link":"#d97706", "Fiber":"#111", "Dummy Link":"#888" };
+
+// Per-class edge visual style — the canvas equivalent of the D3 .link.* CSS.
+// { stroke, lineWidth, lineDash, strokeOpacity }
+const EDGE_STYLE = {
+  l2:           { stroke:"#2563eb", lineWidth:1.4, lineDash:[],     strokeOpacity:0.7 },
+  ip:           { stroke:"#d97706", lineWidth:1.4, lineDash:[5,4],  strokeOpacity:0.7 },
+  fib:          { stroke:"#111111", lineWidth:2.4, lineDash:[],     strokeOpacity:0.7 },
+  dum:          { stroke:"#888888", lineWidth:1,   lineDash:[1,3],  strokeOpacity:0.7 },
+  "pwt-work":   { stroke:"#2563eb", lineWidth:2.4, lineDash:[],     strokeOpacity:0.85 },
+  "pwt-protect":{ stroke:"#f59e0b", lineWidth:2,   lineDash:[10,6], strokeOpacity:0.85 },
+  "pw-mesh":    { stroke:"#94a3b8", lineWidth:1,   lineDash:[3,3],  strokeOpacity:0.55 },
+  "vrf-mesh":   { stroke:"#0d9488", lineWidth:1.2, lineDash:[6,4],  strokeOpacity:0.65 },
+};
+const ICON_SIZE = 36;
+const VSI_CLOUD_W = 68, VSI_CLOUD_H = 52, VSI_SWITCH_SZ = 28;
+
+const _requestedView = sessionStorage.getItem("topology.view") || "full";
+const _layoutMode = sessionStorage.getItem("topology.layout") || "force";
+
+const filters = {
+  roles: null,        // null = all
+  linkTypes: null,    // null = all
+  hideLeaves: false,
+  kcore: 1,
+  search: "",
+  region: "",         // "" = all regions
+  site: "",           // "" = all sites
+  _prevHidden: new Set(),
+};
+
+let SHOW_PORTS = false;     // mid-edge port labels
+let SHOW_LABELS = true;     // 3-line node label (host / ip / role)
+let graph = null;
+
+// ───────────────────────────────────────────────────────────────────────
+// Edge style helpers — mirror the D3 link-class logic.
+// ───────────────────────────────────────────────────────────────────────
+function edgeClassOf(l) {
+  if (l.kind === "pw-mesh") return "pw-mesh";
+  if (l.kind === "vrf-mesh") return "vrf-mesh";
+  if (l.pwt_role === "work")    return "pwt-work";
+  if (l.pwt_role === "protect") return "pwt-protect";
+  return LINK_CLASS[l.type] || "l2";
+}
+function edgeStyleOf(l) { return EDGE_STYLE[edgeClassOf(l)] || EDGE_STYLE.l2; }
+function portLabel(l) {
+  // L2VPN SAP-attach links show the sub-LTP name + VLAN directly on the line.
+  if (l.kind === "sap-attach") return l.name || "";
+  const a = shortPort(l.portA || "");
+  const z = shortPort(l.portZ || "");
+  if (!a && !z) return "";
+  return `${a || "?"}  ↔  ${z || "?"}`;
+}
+const isComposite = role => role === "VSI" || role === "VRF";
+
+// ───────────────────────────────────────────────────────────────────────
+// Custom node type "ne" — icon + 3-line label (host / ip / role), and a
+// CLOUD background underneath for the VSI/VRF composite ("switch inside
+// cloud" idiom). Reproduces the D3 <image> + <text> tspans node.
+// ───────────────────────────────────────────────────────────────────────
+const { Graph, register, ExtensionCategory, BaseNode } = G6;
+
+class NENode extends BaseNode {
+  getKeyStyle(attributes) {
+    const composite = attributes.composite;
+    const sz = composite ? VSI_SWITCH_SZ : ICON_SIZE;
+    return {
+      img: attributes.icon,
+      src: attributes.icon,
+      x: -sz / 2, y: -sz / 2, width: sz, height: sz,
+      opacity: attributes.dim ? 0.12 : 1,
+      shadowColor: attributes.focused ? "#fbbf24" : "transparent",
+      shadowBlur: attributes.focused ? 8 : 0,
+    };
+  }
+  drawKeyShape(attributes, container) {
+    return this.upsert("key", "image", this.getKeyStyle(attributes), container);
+  }
+  render(attributes, container) {
+    const composite = attributes.composite;
+    const op = attributes.dim ? 0.12 : 1;
+
+    // CLOUD background (composite VSI / VRF only) — sits behind the icon.
+    if (composite) {
+      this.upsert("cloud", "image", {
+        src: "icons/CLOUD.png",
+        x: -VSI_CLOUD_W / 2, y: -VSI_CLOUD_H / 2,
+        width: VSI_CLOUD_W, height: VSI_CLOUD_H,
+        opacity: (attributes.dim ? 0.12 : 0.85), zIndex: -1,
+      }, container);
+    }
+
+    // The icon (key shape).
+    this.drawKeyShape(attributes, container);
+
+    // 3-line label below the node.
+    const showLbl = attributes.showLbl !== false;
+    const baseY = composite ? 32 : ICON_SIZE / 2 + 8;
+    const lineStyle = {
+      textAlign: "center", textBaseline: "top",
+      stroke: "#ffffff", lineWidth: 3, lineJoin: "round",
+    };
+    this.upsert("lbl-host", "text", {
+      ...lineStyle, text: showLbl ? (attributes.host || "") : "",
+      x: 0, y: baseY, fontSize: 10, fontWeight: 700, fill: "#111827", opacity: op,
+    }, container);
+    this.upsert("lbl-ip", "text", {
+      ...lineStyle, text: showLbl ? (attributes.ipText || "") : "",
+      x: 0, y: baseY + 12, fontSize: 10, fill: "#1d4ed8", opacity: op,
+    }, container);
+    this.upsert("lbl-role", "text", {
+      ...lineStyle, text: showLbl ? (attributes.roleText || "") : "",
+      x: 0, y: baseY + 24, fontSize: 10, fontStyle: "italic", fill: "#a16207", opacity: op,
+    }, container);
+  }
+}
+register(ExtensionCategory.NODE, "ne", NENode);
+
+// ───────────────────────────────────────────────────────────────────────
+main();
+// ───────────────────────────────────────────────────────────────────────
+
+function main() {
+  // View / region state is kept in sessionStorage (same as the D3 build).
+  const requested = sessionStorage.getItem("topology.view") || "full";
+  const viewSel = document.getElementById("view-select");
+  viewSel.value = requested;
+  viewSel.addEventListener("change", e => {
+    sessionStorage.setItem("topology.view", e.target.value);
+    sessionStorage.removeItem("topology.region");
+    location.reload();
+  });
+
+  // Geo view — entirely separate (AntV L7). Short-circuit before G6 setup.
+  if (requested === "geo") {
+    renderGeoMap(window.TOPO_GEO);
+    return;
+  }
+
+  const VIEWS = { full: window.TOPO_FULL, core: window.TOPO_CORE, e2e: window.TOPO_E2E, l2vpn: window.TOPO_L2VPN, vpls: window.TOPO_VPLS, l3vpn: window.TOPO_L3VPN, gpon: window.TOPO_GPON, tunnel: window.TOPO_TUNNEL };
+  const data = VIEWS[requested] || VIEWS.full;
+  if (!data) { document.body.innerHTML = "<pre style='padding:20px;color:#b91c1c'>topology-*.js missing — run python build_d3.py</pre>"; return; }
+
+  // Region dropdown — populated from data.regions.
+  const regionSel = document.getElementById("region-select");
+  (data.regions || []).forEach(r => {
+    const opt = document.createElement("option");
+    opt.value = r.name; opt.textContent = `${r.name} (${r.count.toLocaleString()})`;
+    regionSel.appendChild(opt);
+  });
+  const initialRegion = sessionStorage.getItem("topology.region") || "";
+  regionSel.value = initialRegion;
+  filters.region = initialRegion;
+  regionSel.addEventListener("change", e => {
+    filters.region = e.target.value;
+    if (filters.region) sessionStorage.setItem("topology.region", filters.region);
+    else sessionStorage.removeItem("topology.region");
+    applyFilters();
+  });
+
+  // Site search — type-ahead datalist over the hostname-prefix codes.
+  const siteSel = document.getElementById("site-select");
+  const siteList = document.getElementById("site-list");
+  (data.sites || []).forEach(s => {
+    const opt = document.createElement("option");
+    opt.value = s.name;
+    opt.label = `${s.name}  (${s.count.toLocaleString()} NEs)`;
+    siteList.appendChild(opt);
+  });
+  const initialSite = sessionStorage.getItem("topology.site") || "";
+  siteSel.value = initialSite;
+  filters.site = initialSite;
+  siteSel.addEventListener("change", e => {
+    const v = (e.target.value || "").trim().toUpperCase();
+    siteSel.value = v;
+    filters.site = v;
+    if (v) sessionStorage.setItem("topology.site", v);
+    else sessionStorage.removeItem("topology.site");
+    applyFilters();
+  });
+  siteSel.addEventListener("input", e => {
+    filters.site = (e.target.value || "").trim().toUpperCase();
+    applyFilters();
+  });
+  document.getElementById("stat-nodes").textContent = data.nodes.length.toLocaleString();
+  document.getElementById("stat-links").textContent = data.links.length.toLocaleString();
+
+  // --- Role filter pills ----------------------------------------------------
+  const roleCounts = new Map();
+  for (const n of data.nodes) roleCounts.set(n.role, (roleCounts.get(n.role) || 0) + 1);
+  const roleHost = document.getElementById("role-filter");
+  const allRoles = [...roleCounts.keys()];
+  for (const [role, n] of [...roleCounts.entries()].sort((a,b) => b[1]-a[1])) {
+    const el = document.createElement("span");
+    el.className = "filter-pill"; el.dataset.role = role;
+    el.style.background = ROLE_COLOR[role] || "#374151";
+    el.textContent = `${role} ${n.toLocaleString()}`;
+    el.addEventListener("click", () => {
+      el.classList.toggle("off");
+      const on = Array.from(roleHost.querySelectorAll(".filter-pill:not(.off)")).map(p => p.dataset.role);
+      filters.roles = on.length === allRoles.length ? null : new Set(on);
+      applyFilters();
+    });
+    roleHost.appendChild(el);
+  }
+
+  // --- Link-type pills ------------------------------------------------------
+  const linkCounts = new Map();
+  for (const l of data.links) linkCounts.set(l.type, (linkCounts.get(l.type) || 0) + 1);
+  const linkHost = document.getElementById("link-filter");
+  const allTypes = [...linkCounts.keys()];
+  for (const [t, n] of [...linkCounts.entries()].sort((a,b) => b[1]-a[1])) {
+    const el = document.createElement("span");
+    el.className = "filter-pill"; el.dataset.type = t;
+    el.style.background = LINK_COLOR[t] || "#374151";
+    el.textContent = `${t} ${n.toLocaleString()}`;
+    el.addEventListener("click", () => {
+      el.classList.toggle("off");
+      const on = Array.from(linkHost.querySelectorAll(".filter-pill:not(.off)")).map(p => p.dataset.type);
+      filters.linkTypes = on.length === allTypes.length ? null : new Set(on);
+      applyFilters();
+    });
+    linkHost.appendChild(el);
+  }
+
+  // Force views (force-directed) vs fixed-layout service views.
+  const FORCE_VIEW = (requested === "full" || requested === "core" || requested === "e2e");
+
+  const mainEl = document.querySelector("main");
+  const W = mainEl.clientWidth || (window.innerWidth - 280);
+  const H = mainEl.clientHeight || window.innerHeight;
+
+  // Pre-compute fixed positions for the service views.
+  const fixedPos = FORCE_VIEW ? null : computeFixedPositions(data, requested, W, H);
+
+  // Build G6 data: each node carries the original record in `data`; service
+  // views also carry an absolute style.x / style.y.
+  const g6nodes = data.nodes.map(n => {
+    const node = { id: n.id, data: { ...n } };
+    if (fixedPos && fixedPos.has(n.id)) {
+      const p = fixedPos.get(n.id);
+      node.style = { x: p.x, y: p.y };
+    }
+    return node;
+  });
+  const g6edges = data.links.map((l, i) => ({
+    id: "e" + i, source: l.source, target: l.target, data: { ...l },
+  }));
+
+  // Mid-edge port labels default ON for the small service / e2e views.
+  if (requested === "e2e" || requested === "l2vpn" || requested === "vpls" || requested === "l3vpn" || requested === "gpon" || requested === "tunnel") {
+    SHOW_PORTS = true;
+    document.getElementById("show-port").checked = true;
+  }
+
+  // --- Node & edge element specs (reused on toggle via setNode / setEdge) ---
+  const nodeSpec = {
+    type: "ne",
+    style: {
+      size: ICON_SIZE,
+      icon: d => d.data.icon,
+      composite: d => isComposite(d.data.role),
+      host: d => d.data.name,
+      ipText: d => d.data.ip,
+      roleText: d => d.data.role,
+      showLbl: () => SHOW_LABELS,
+    },
+    state: {
+      active:   { focused: true },
+      inactive: { dim: true },
+    },
+  };
+  const edgeSpec = {
+    style: {
+      stroke:        d => edgeStyleOf(d.data).stroke,
+      lineWidth:     d => edgeStyleOf(d.data).lineWidth,
+      lineDash:      d => edgeStyleOf(d.data).lineDash,
+      strokeOpacity: d => edgeStyleOf(d.data).strokeOpacity,
+      endArrow: false,
+      labelText:       d => SHOW_PORTS ? portLabel(d.data) : "",
+      labelFontSize:   9,
+      labelFill:       "#166534",
+      labelBackground: true,
+      labelBackgroundFill: "#ffffff",
+      labelBackgroundOpacity: 0.65,
+    },
+    state: {
+      active:   { stroke: "#fbbf24", lineWidth: 3, strokeOpacity: 1 },
+      inactive: { strokeOpacity: 0.06 },
+    },
+  };
+
+  // --- Layout ---------------------------------------------------------------
+  // full/core/e2e → d3-force. Service views → no layout (fixed style.x/y).
+  const baseCharge = -700, baseDist = 120, baseCollide = 60;
+  const layout = FORCE_VIEW ? buildForceLayout({
+    charge: baseCharge, dist: baseDist, collide: baseCollide,
+    grav: 0, tier: (requested === "full" || requested === "core") && _layoutMode === "tier",
+    W, H,
+  }) : undefined;
+
+  // --- Behaviors ------------------------------------------------------------
+  const behaviors = [
+    "drag-canvas",
+    "zoom-canvas",
+    FORCE_VIEW ? { type: "drag-element-force", fixed: true } : "drag-element",
+    { type: "hover-activate", degree: 1, state: "active", inactiveState: "inactive" },
+  ];
+
+  graph = new Graph({
+    container: "graph",
+    width: W, height: H,
+    autoResize: true,
+    data: { nodes: g6nodes, edges: g6edges },
+    node: nodeSpec,
+    edge: edgeSpec,
+    layout,
+    behaviors,
+    plugins: [
+      {
+        type: "tooltip",
+        trigger: "hover",
+        enterable: false,
+        getContent: (evt, items) => {
+          const it = items && items[0];
+          if (!it) return "";
+          const isEdge = it.source != null && it.target != null;
+          const html = isEdge ? linkTooltip(it.data || {}) : nodeTooltip(it.data || {});
+          return `<div class="tooltip" style="position:static;opacity:1;display:block">${html}</div>`;
+        },
+      },
+    ],
+    zoom: FORCE_VIEW ? 1 : 0.7,
+  });
+
+  graph.render().then(() => {
+    try { graph.fitView(); } catch (e) {}
+    applyFilters();
+  });
+  // For force views, re-frame once the simulation has settled.
+  if (FORCE_VIEW) graph.on("afterlayout", () => { try { graph.fitView(); } catch (e) {} });
+
+  // Tier-aligned layout dropdown (full / core only).
+  if ((requested === "full" || requested === "core") && data.nodes.length > 0) {
+    const layoutRow = document.getElementById("layout-row");
+    if (layoutRow) layoutRow.style.display = "";
+    const layoutSel = document.getElementById("layout-select");
+    layoutSel.value = _layoutMode;
+    layoutSel.addEventListener("change", e => {
+      sessionStorage.setItem("topology.layout", e.target.value);
+      location.reload();
+    });
+  }
+
+  // --- Force sliders --------------------------------------------------------
+  let curCharge = baseCharge, curDist = baseDist, curCollide = baseCollide, curGrav = 0;
+  function relayout() {
+    if (!FORCE_VIEW) return;
+    graph.setLayout(buildForceLayout({
+      charge: curCharge, dist: curDist, collide: curCollide, grav: curGrav,
+      tier: (requested === "full" || requested === "core") && _layoutMode === "tier",
+      W, H,
+    }));
+    graph.layout();
+  }
+  bindRange("charge", v => { curCharge = +v; relayout(); }, "v-charge");
+  bindRange("dist",   v => { curDist   = +v; relayout(); }, "v-dist");
+  bindRange("coll",   v => { curCollide = +v; relayout(); }, "v-coll");
+  bindRange("grav",   v => { curGrav = (+v) / 2000; relayout(); }, "v-grav");
+
+  // --- Label / port toggles -------------------------------------------------
+  document.getElementById("show-port").addEventListener("change", e => {
+    SHOW_PORTS = e.target.checked;
+    try { graph.setEdge(edgeSpec); graph.draw(); } catch (err) { console.error(err); }
+  });
+  document.getElementById("show-label").addEventListener("change", e => {
+    SHOW_LABELS = e.target.checked;
+    try { graph.setNode(nodeSpec); graph.draw(); } catch (err) { console.error(err); }
+  });
+
+  // --- Freeze / re-energise -------------------------------------------------
+  document.getElementById("freeze").addEventListener("click", () => { try { graph.stopLayout(); } catch (e) {} });
+  document.getElementById("thaw").addEventListener("click", () => { if (FORCE_VIEW) { try { graph.layout(); } catch (e) {} } });
+
+  // --- Presets --------------------------------------------------------------
+  function setPills(host, attr, keepSet) {
+    host.querySelectorAll(".filter-pill").forEach(p => {
+      const v = p.dataset[attr];
+      p.classList.toggle("off", keepSet && !keepSet.has(v));
+    });
+  }
+  document.querySelectorAll("aside button[data-preset]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const p = btn.dataset.preset;
+      filters.roles = null; filters.linkTypes = null; filters.hideLeaves = false; filters.kcore = 1;
+      document.getElementById("hide-leaves").checked = false;
+      document.getElementById("kcore").value = 1;
+      document.getElementById("v-kcore").textContent = "1";
+      if (p === "core-ring") {
+        filters.roles = new Set(["CORE"]); setPills(roleHost, "role", filters.roles);
+        filters.linkTypes = new Set(["L2 Link"]); setPills(linkHost, "type", filters.linkTypes);
+      } else if (p === "core-agg") {
+        filters.roles = new Set(["CORE","AGG"]); setPills(roleHost, "role", filters.roles);
+        filters.linkTypes = new Set(["L2 Link","IP Link"]); setPills(linkHost, "type", filters.linkTypes);
+      } else if (p === "agg-acc") {
+        filters.roles = new Set(["AGG","ACC"]); setPills(roleHost, "role", filters.roles);
+        filters.linkTypes = new Set(["L2 Link"]); setPills(linkHost, "type", filters.linkTypes);
+      } else if (p === "rings-only") {
+        filters.kcore = 2; filters.hideLeaves = true;
+        document.getElementById("hide-leaves").checked = true;
+        document.getElementById("kcore").value = 2;
+        document.getElementById("v-kcore").textContent = "2";
+        filters.linkTypes = new Set(["L2 Link","IP Link","Fiber"]); setPills(linkHost, "type", filters.linkTypes);
+        setPills(roleHost, "role", null);
+      } else { // all
+        setPills(roleHost, "role", null); setPills(linkHost, "type", null);
+      }
+      applyFilters();
+    });
+  });
+
+  // --- Ring-isolation controls ----------------------------------------------
+  document.getElementById("hide-leaves").addEventListener("change", e => { filters.hideLeaves = e.target.checked; applyFilters(); });
+  document.getElementById("kcore").addEventListener("input", e => {
+    filters.kcore = +e.target.value;
+    document.getElementById("v-kcore").textContent = e.target.value;
+    applyFilters();
+  });
+  document.getElementById("search").addEventListener("input", e => { filters.search = e.target.value; applyFilters(); });
+
+  // --- Filtering (visibility-based) -----------------------------------------
+  // Mirrors the D3 applyFilters(): role + region + site + search → k-core /
+  // leaf-peel prune → toggle element visibility (nodes + their edges).
+  function applyFilters() {
+    if (!graph) return;
+    const roleOK = d => !filters.roles || filters.roles.has(d.role);
+    const linkTypeOK = l => !filters.linkTypes || filters.linkTypes.has(l.type);
+    const regionOK = d => !filters.region || (d.region === filters.region);
+    const siteOK   = d => !filters.site   || (d.site   === filters.site);
+    const q = filters.search.trim().toLowerCase();
+    const searchOK = d => !q || (d.name && d.name.toLowerCase().includes(q)) || (d.ip && d.ip.toLowerCase().includes(q));
+
+    let visibleNodes = new Set(data.nodes.filter(d => roleOK(d) && regionOK(d) && siteOK(d) && searchOK(d)).map(d => d.id));
+
+    const passLink = l => visibleNodes.has(l.source) && visibleNodes.has(l.target) && linkTypeOK(l);
+
+    // k-core / hide-leaves — iteratively peel nodes with degree < k.
+    const k = filters.hideLeaves ? Math.max(2, filters.kcore) : filters.kcore;
+    if (k >= 2) {
+      let changed = true;
+      while (changed) {
+        changed = false;
+        const deg = new Map();
+        for (const id of visibleNodes) deg.set(id, 0);
+        for (const l of data.links) {
+          if (!passLink(l)) continue;
+          deg.set(l.source, (deg.get(l.source) || 0) + 1);
+          deg.set(l.target, (deg.get(l.target) || 0) + 1);
+        }
+        for (const [id, dg] of deg) {
+          if (dg < k) { visibleNodes.delete(id); changed = true; }
+        }
+      }
+    }
+
+    // Compute hidden set (nodes + edges) and apply the diff vs. last pass.
+    const newHidden = new Set();
+    for (const n of data.nodes) if (!visibleNodes.has(n.id)) newHidden.add(n.id);
+    let nLinks = 0;
+    data.links.forEach((l, i) => {
+      const ok = visibleNodes.has(l.source) && visibleNodes.has(l.target) && linkTypeOK(l);
+      if (ok) nLinks++; else newHidden.add("e" + i);
+    });
+
+    const rec = {};
+    for (const id of newHidden) if (!filters._prevHidden.has(id)) rec[id] = "hidden";
+    for (const id of filters._prevHidden) if (!newHidden.has(id)) rec[id] = "visible";
+    filters._prevHidden = newHidden;
+    if (Object.keys(rec).length) { try { graph.setElementVisibility(rec); } catch (e) { console.error(e); } }
+
+    document.getElementById("stat-shown").textContent = visibleNodes.size.toLocaleString();
+    document.getElementById("stat-shown-links").textContent = nLinks.toLocaleString();
+  }
+}
+
+// d3-force layout config builder (re-used by the sliders).
+function buildForceLayout({ charge, dist, collide, grav, tier, W, H }) {
+  const TIER_Y = { CORE: 0.10, AGG: 0.32, ACC: 0.56, OLT: 0.78, MSAN: 0.86, RPS: 0.92, OTHER: 0.96 };
+  const cfg = {
+    type: "d3-force",
+    link:     { distance: dist, strength: 0.4 },
+    manyBody: { strength: charge, distanceMax: 500 },
+    center:   { x: W / 2, y: H / 2 },
+    collide:  { radius: collide },
+    alphaDecay: 0.015,
+  };
+  if (tier) {
+    cfg.y = { strength: 0.45, y: (d) => { const role = (d && d.data && d.data.role) || (d && d.role); return H * (TIER_Y[role] ?? 0.5); } };
+  }
+  if (grav > 0) {
+    cfg.x = { x: W / 2, strength: grav };
+    cfg.y = { y: H / 2, strength: grav };
+  }
+  return cfg;
+}
+
+// Fixed-position layouts for the service views (ported from the D3 build's
+// per-view layout blocks).
+function computeFixedPositions(data, requested, W, H) {
+  const pos = new Map();
+  const groupBy = (arr, keyFn) => {
+    const m = new Map();
+    for (const x of arr) { const k = keyFn(x); if (!m.has(k)) m.set(k, []); m.get(k).push(x); }
+    return m;
+  };
+
+  if (requested === "l2vpn" && data.nodes.length >= 3) {
+    const services = groupBy(data.nodes, n => n.service_index);
+    const rowHeight = 220, cloudGap = 100, topMargin = 80;
+    let idx = 0;
+    for (const [, nodes] of services) {
+      const rowY = topMargin + idx * rowHeight + rowHeight / 2;
+      const aNodes = nodes.filter(n => n.side === "A-end");
+      const zNodes = nodes.filter(n => n.side === "Z-end");
+      const clouds = nodes.filter(n => n.side === "service");
+      aNodes.forEach(n => pos.set(n.id, { x: W * 0.12, y: rowY }));
+      zNodes.forEach(n => pos.set(n.id, { x: W * 0.88, y: rowY }));
+      clouds.forEach((n, i) => pos.set(n.id, { x: W * 0.50, y: rowY + (i - (clouds.length - 1) / 2) * cloudGap }));
+      idx++;
+    }
+    return pos;
+  }
+
+  if ((requested === "gpon" || requested === "tunnel") && data.nodes.length >= 2) {
+    const services = groupBy(data.nodes, n => n.service_index);
+    const rowHeight = 200, topMargin = 80;
+    let idx = 0;
+    for (const [, nodes] of services) {
+      const rowY = topMargin + idx * rowHeight + rowHeight / 2;
+      const olt   = nodes.find(n => n.side === "olt");
+      const cloud = nodes.find(n => n.side === "service");
+      const ont   = nodes.find(n => n.side === "ont");
+      const cust  = nodes.find(n => n.side === "customer");
+      const has4 = !!cust;
+      if (has4) {
+        if (olt)   pos.set(olt.id,   { x: W * 0.10, y: rowY });
+        if (cloud) pos.set(cloud.id, { x: W * 0.36, y: rowY });
+        if (ont)   pos.set(ont.id,   { x: W * 0.66, y: rowY });
+        pos.set(cust.id, { x: W * 0.90, y: rowY });
+      } else {
+        if (olt)   pos.set(olt.id,   { x: W * 0.12, y: rowY });
+        if (cloud) pos.set(cloud.id, { x: W * 0.50, y: rowY });
+        if (ont)   pos.set(ont.id,   { x: W * 0.88, y: rowY });
+      }
+      idx++;
+    }
+    return pos;
+  }
+
+  if ((requested === "vpls" || requested === "l3vpn") && data.nodes.length >= 2) {
+    const services = groupBy(data.nodes, n => n.service_index);
+    const rowHeight = 460, topMargin = 100, radiusVSI = 110, radiusNE = 210;
+    let idx = 0;
+    for (const [, nodes] of services) {
+      const rowY = topMargin + idx * rowHeight + rowHeight / 2;
+      const cx = W * 0.50;
+      const cloud = nodes.find(n => n.side === "service");
+      const vsiNodes = nodes.filter(n => n.side === "vsi");
+      const epNodes  = nodes.filter(n => n.side === "endpoint");
+      if (cloud) pos.set(cloud.id, { x: cx, y: rowY });
+      const armCount = Math.max(vsiNodes.length, epNodes.length, 1);
+      const placeOnArm = (n) => {
+        const ang = (n.ep_idx / armCount) * 2 * Math.PI - Math.PI / 2;
+        const r = n.side === "vsi" ? radiusVSI : radiusNE;
+        pos.set(n.id, { x: cx + r * Math.cos(ang), y: rowY + r * Math.sin(ang) });
+      };
+      vsiNodes.forEach(placeOnArm);
+      epNodes.forEach(placeOnArm);
+      idx++;
+    }
+    return pos;
+  }
+
+  return pos;
+}
+
+function bindRange(id, fn, statId) {
+  const el = document.getElementById(id);
+  const stat = document.getElementById(statId);
+  stat.textContent = el.value;
+  el.addEventListener("input", () => { stat.textContent = el.value; fn(el.value); });
+}
+
+function shortPort(p) {
+  if (!p) return "";
+  return p.replace(/Frame:(\d+)\/Slot:(\d+)\/Port:(\S+)/, "$1/$2/$3")
+          .replace(/GigabitEthernet/, "Gi")
+          .replace(/TenGigabitEthernet|TenGigE/, "Te")
+          .replace(/HundredGigE|FortyGigE/, "Fo");
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Tooltips (ported verbatim from the D3 build — operate on the raw record).
+// ───────────────────────────────────────────────────────────────────────
+function nodeTooltip(d) {
+  if (d.role === "CLOUD" && d.service_type && d.service_type.startsWith("MPLS-TE")) {
+    const protectBadge = (d.a_protect_role === "protect" || d.z_protect_role === "protect")
+      ? `<span style="color:#f59e0b;font-weight:700">PROTECT</span>`
+      : `<span style="color:#2563eb;font-weight:700">WORK</span>`;
+    return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+      `<span style="color:#fbbf24">MPLS-TE Tunnel — ${escapeHtml((d.signal_type || 'rsvp-te').toUpperCase())}</span>${" · "}${protectBadge}<br/>` +
+      `Tunnel-id <b>${escapeHtml(String(d.tunnel_id))}</b> · direction ${escapeHtml(d.direction || 'unidirectional')}<br/>` +
+      `<div style="margin-top:6px;color:#cbd5e1"><b style="color:#fbbf24">Path</b><br/>` +
+      `&nbsp;&nbsp;A-end (source): <b>${escapeHtml(d.a_ne_name)}</b> · loopback <code>${escapeHtml(d.source_ip)}</code><br/>` +
+      `&nbsp;&nbsp;Z-end (dest&nbsp;): <b>${escapeHtml(d.z_ne_name)}</b> · loopback <code>${escapeHtml(d.destination_ip)}</code></div>` +
+      `<div style="margin-top:6px;color:#cbd5e1"><b style="color:#fbbf24">Protection &amp; resilience</b><br/>` +
+      `&nbsp;&nbsp;A-end role: ${escapeHtml(d.a_protect_role || '—')} · FRR <span style="color:${d.a_frr ? '#10b981' : '#94a3b8'}">${d.a_frr ? 'enabled' : 'off'}</span> · admin ${escapeHtml(d.a_admin_state || '—')}<br/>` +
+      `&nbsp;&nbsp;Z-end role: ${escapeHtml(d.z_protect_role || '—')} · FRR <span style="color:${d.z_frr ? '#10b981' : '#94a3b8'}">${d.z_frr ? 'enabled' : 'off'}</span> · admin ${escapeHtml(d.z_admin_state || '—')}</div>` +
+      `<span style="color:#10b981">${escapeHtml(d.active_state || 'unknown')}</span> · created ${escapeHtml((d.created || '').slice(0,10))}`;
+  }
+  if (d.role === "CLOUD" && d.service_type && d.service_type.startsWith("GPON")) {
+    return `<b style="font-size:13px">Customer ${escapeHtml(d.customer_id || '—')}</b><br/>` +
+      `<span style="color:#fbbf24">GPON / FTTH residential service</span><br/>` +
+      `Product: <b>${escapeHtml(d.product_tag || '—')}</b> · ISP-ref: <b>${escapeHtml(d.isp_ref || '—')}</b><br/>` +
+      `Service type: ${escapeHtml(d.service_type_field || 'MultiServiceVlan')} · connect: ${escapeHtml(d.connect_type || 'LAN-GPON')}` +
+      `<div style="margin-top:6px;color:#cbd5e1"><b style="color:#fbbf24">GPON identifiers</b><br/>` +
+      `&nbsp;&nbsp;PON port: <code>${escapeHtml(d.pon_port || '—')}</code>  <span style="color:#94a3b8">(OLT optical interface)</span><br/>` +
+      `&nbsp;&nbsp;GEM port: <b>${escapeHtml(String(d.gem_port))}</b>          <span style="color:#94a3b8">(GPON logical channel)</span><br/>` +
+      `&nbsp;&nbsp;ONT-id:   <b>${escapeHtml(String(d.ont_id))}</b>            <span style="color:#94a3b8">(ONU index on this PON)</span><br/>` +
+      `&nbsp;&nbsp;ONT ETH:  <b>${escapeHtml(String(d.ont_eth_port || '—'))}</b>  <span style="color:#94a3b8">(customer LAN port on the ONT)</span></div>` +
+      `<div style="margin-top:6px;color:#cbd5e1"><b style="color:#fbbf24">Tagging</b><br/>` +
+      `&nbsp;&nbsp;S-VLAN: <b>${escapeHtml(String(d.s_vlan))}</b>` +
+      (d.s_inner_vlan ? ` · S-inner: <b>${escapeHtml(String(d.s_inner_vlan))}</b> (QinQ)` : "") + `<br/>` +
+      `&nbsp;&nbsp;U-VLAN: <b>${escapeHtml(String(d.user_vlan))}</b></div>` +
+      `<div style="margin-top:4px">Traffic: up <code>${escapeHtml(d.up_traffic_tpl)}</code>, down <code>${escapeHtml(d.down_traffic_tpl)}</code></div>` +
+      `<span style="color:#94a3b8">created ${escapeHtml((d.created || '').slice(0,10))} · last modified ${escapeHtml((d.modified || '').slice(0,10))}</span>`;
+  }
+  if (d.role === "ONT" || d.role === "ONU") {
+    const online = d.operate_state_onu === "1";
+    const stateColor = online ? "#10b981" : "#f59e0b";
+    const stateLabel = online ? "online" : (d.operate_state_onu === "2" ? "offline" : "unknown");
+    return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+      `<span style="color:#fbbf24">${escapeHtml(d.role)} — ${escapeHtml(d.product)}</span><br/>` +
+      `Serial: <code>${escapeHtml(d.sn || '—')}</code> · vendor ${escapeHtml(d.vendor_id || '—')}<br/>` +
+      `${escapeHtml(d.pon_type || 'GPON')} · ${escapeHtml(d.fttx_mode || 'FTTH')} · class ${escapeHtml(d.onu_class || '—')}<br/>` +
+      `Software: ${escapeHtml(d.soft_version || '—')}<br/>` +
+      `<span style="color:${stateColor}">${escapeHtml(stateLabel)}</span>` +
+      (d.ont_range_m ? ` · fibre distance ${escapeHtml(String(d.ont_range_m))} m` : "") +
+      (d.last_down_time ? `<br/><span style="color:#94a3b8">Last seen down: ${escapeHtml(d.last_down_time)}</span>` : "");
+  }
+  if (d.role === "CUSTOMER") {
+    return `<b style="font-size:13px">Customer ${escapeHtml(d.customer_id || '—')}</b><br/>` +
+      `<span style="color:#fbbf24">Subscriber endpoint (home)</span><br/>` +
+      `Product / package: <b>${escapeHtml(d.product_tag || '—')}</b><br/>` +
+      `ISP / wholesale reference: <b>${escapeHtml(d.isp_ref || '—')}</b><br/>` +
+      `<span style="color:#94a3b8">Identified via the service-port alias on the OLT.</span>`;
+  }
+  if (d.role === "VRF") {
+    const exp = d.export_rts || "—";
+    const imp = d.import_rts || "—";
+    const af = ({1: "IPv4 unicast", 2: "IPv6 unicast"})[d.address_family] || `address-family ${d.address_family}`;
+    const roleField = d.role_field ? `<br/><span style="color:#94a3b8">Role in service: <b>${escapeHtml(d.role_field)}</b></span>` : "";
+    return `<b style="font-size:13px">VRF ${escapeHtml(d.vrf_name || '—')}</b><br/>` +
+      `<span style="color:#fbbf24">Virtual Routing &amp; Forwarding — L3 instance on ${escapeHtml(d.ne_name)}</span><br/>` +
+      `Route Distinguisher: <code>${escapeHtml(d.rd || '—')}</code> · ${escapeHtml(af)}<br/>` +
+      `Owns this PE's routing table for service <b>${escapeHtml(d.service_name)}</b>. ` +
+      `Routes are exchanged with peer VRFs via MP-BGP, gated by Route Targets.<br/>` +
+      `<span style="color:#10b981">Export RT:</span> ${escapeHtml(exp)}<br/>` +
+      `<span style="color:#0ea5e9">Import RT:</span> ${escapeHtml(imp)}` + roleField;
+  }
+  if (d.role === "VSI") {
+    const stateColor = (d.vsi_state || "").includes("active") ? "#10b981" : "#f59e0b";
+    return `<b style="font-size:13px">VSI ${escapeHtml(String(d.vsi_id || '—'))}</b><br/>` +
+      `<span style="color:#fbbf24">Virtual Switch Instance — service bridge on ${escapeHtml(d.ne_name)}</span><br/>` +
+      `<span style="color:${stateColor}">${escapeHtml(d.vsi_state || 'unknown')}</span> · ` +
+      `${escapeHtml(d.vsi_signal || 'ldp')}-signalled · ` +
+      `${escapeHtml(d.vsi_encap || 'ethernet')} · MTU ${escapeHtml(String(d.vsi_mtu || ''))}<br/>` +
+      `Bridges the local SAP into the full-mesh pseudowire fabric of service <b>${escapeHtml(d.service_name)}</b>. ` +
+      `Owns this PE's MAC table for the service.` +
+      (d.vsi_remark ? `<br/><span style="color:#94a3b8">${escapeHtml(d.vsi_remark)}</span>` : "");
+  }
+  if (d.role === "PORT") {
+    const kindLabel = d.kind === "trunk"
+      ? "Trunk port — physical egress / aggregation member"
+      : `Sub-interface — carries service VLAN ${d.vlan || '?'} over the trunk`;
+    const bw = d.bandwidth ? (Number(d.bandwidth) / 1000).toFixed(0) + " Mbps" : "unknown bandwidth";
+    const ltpDesc = d.ltp_type === "Eth-Trunk"
+      ? "Ethernet link aggregation (LAG)"
+      : (d.ltp_type === "GigabitEthernet" ? "1 Gbps Ethernet" : (d.ltp_type || "port"));
+    return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+      `<span style="color:#fbbf24">${escapeHtml(kindLabel)}</span><br/>` +
+      `${escapeHtml(ltpDesc)} · ${escapeHtml(bw)} · MTU ${escapeHtml(String(d.mtu || ''))}<br/>` +
+      `Operates in ${escapeHtml(d.work_mode || 'L2/L3')} mode (${escapeHtml(d.layer_rate || '')})<br/>` +
+      `Side: ${escapeHtml(d.side)}` +
+      (d.vlan ? `<br/>Service VLAN ID: <b>${escapeHtml(d.vlan)}</b>` : "");
+  }
+  if (d.role === "CLOUD" && d.service_type && d.service_type.startsWith("L3VPN")) {
+    return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+      `<span style="color:#fbbf24">${escapeHtml(d.service_type)}</span><br/>` +
+      `<span style="color:#94a3b8">Service type: ${escapeHtml(d.service_type_name || 'dynamicL3VPN')} · ` +
+      `topology: ${escapeHtml(d.topo_type || 'FullMesh')} · ${escapeHtml(d.signal_type || 'Dynamic')}-signalled</span><br/>` +
+      `BGP/MPLS Layer-3 VPN with <b>${escapeHtml(String(d.vrf_count))}</b> VRF instance(s) — one per participating PE.<br/>` +
+      `Each PE's VRF holds a per-customer routing table; routes are exchanged via MP-BGP using Route Targets.`;
+  }
+  if (d.role === "CLOUD" && d.service_type && d.service_type.startsWith("VPLS")) {
+    return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+      `<span style="color:#fbbf24">${escapeHtml(d.service_type)}</span><br/>` +
+      `<span style="color:#10b981">${escapeHtml(d.active_state || 'unknown')}</span> · ` +
+      `<span style="color:#94a3b8">${escapeHtml(d.signal_type || 'ldp')}-signalled · ${escapeHtml(d.topo_type || 'Any2Any')}</span><br/>` +
+      `Multipoint Layer-2 VPN with <b>${escapeHtml(String(d.ep_count))}</b> endpoint(s) and a full mesh of <b>${escapeHtml(String(d.pw_count))}</b> pseudowire(s).<br/>` +
+      `Each NE participating runs a local VSI (Virtual Switch Instance) that bridges its SAP to every other site's PWs.<br/>` +
+      `<span style="color:#94a3b8">created ${escapeHtml((d.created || '').slice(0,10))} by ${escapeHtml(d.creator || '—')}</span>`;
+  }
+  if (d.role === "CLOUD" && d.pwt_role !== undefined) {
+    const roleLabel = d.pwt_role === "work" ? "Active path (work)" : "Standby path (protect)";
+    const stateOK = (d.active_state || "").includes("active");
+    const aPeer = d.a_peer_ip ? `From ${escapeHtml(d.a_ne_name)} (loopback ${escapeHtml(d.a_peer_ip)}) toward ${escapeHtml(d.z_ne_name)}` : "";
+    const zPeer = d.z_peer_ip ? `From ${escapeHtml(d.z_ne_name)} (loopback ${escapeHtml(d.z_peer_ip)}) toward ${escapeHtml(d.a_ne_name)}` : "";
+    const pwTypeHuman = (d.a_pw_type || "").replace("ETHERNET_TAGGED", "Tagged-Ethernet pseudowire").replace("SATOP", "Structure-Agnostic TDM");
+    const tunnels = (d.tunnels && d.tunnels.length)
+      ? d.tunnels.map(t => `${escapeHtml(t.name)} (${escapeHtml(t.signal || 'mpls')}, ${escapeHtml(t.source_ip)} → ${escapeHtml(t.destination_ip)})`).join("<br/>")
+      : `No explicit MPLS-TE tunnel — rides over ${escapeHtml(d.signal_type || 'LDP')}-signalled pseudowires directly.`;
+    return `<b style="font-size:13px">${escapeHtml(roleLabel)}</b><br/>` +
+      `<span style="color:${stateOK ? '#10b981' : '#f59e0b'}">${escapeHtml(d.active_state || 'unknown')}</span><br/>` +
+      `Pseudowire trail for L2VPN service <b>${escapeHtml(d.service_name)}</b>.<br/>` +
+      `Carries ${escapeHtml(pwTypeHuman || 'Layer-2 frames')} ${escapeHtml(d.direction || 'bidirectionally')}.<br/>` +
+      (aPeer ? aPeer + ` <span style="color:#94a3b8">(local PW label ${escapeHtml(String(d.a_pw_label))})</span><br/>` : "") +
+      (zPeer ? zPeer + ` <span style="color:#94a3b8">(local PW label ${escapeHtml(String(d.z_pw_label))})</span><br/>` : "") +
+      `<div style="margin-top:6px;color:#a78bfa">Transport:</div><div>${tunnels}</div>` +
+      `<div style="margin-top:6px;color:#94a3b8">Protection: ${escapeHtml(d.protection || '—')} · created ${escapeHtml((d.created || '').slice(0,10))}</div>`;
+  }
+  const roleDescr = ({
+    CORE: "Backbone router (service edge)",
+    AGG:  "Aggregation router",
+    ACC:  "Access router / cell-site gateway",
+    OLT:  "GPON Optical Line Terminal",
+    MSAN: "Multi-Service Access Node",
+  })[d.role] || d.role;
+  const stateOK = (d.operate_state === "0");
+  return `<b style="font-size:13px">${escapeHtml(d.name)}</b><br/>` +
+    `<span style="color:#fbbf24">${escapeHtml(roleDescr)} — ${escapeHtml(d.product)}</span><br/>` +
+    `Management IP: ${escapeHtml(d.ip)} · Loopback (LSR-ID): ${escapeHtml(d.lsr_id || '—')}<br/>` +
+    `Vendor: ${escapeHtml(d.vendor || 'Huawei')} · Software: ${escapeHtml(d.software || '')}<br/>` +
+    `Region: ${escapeHtml(d.region || '(unassigned)')} · Site: <b>${escapeHtml(d.site || '(unknown)')}</b><br/>` +
+    `<span style="color:${stateOK ? '#10b981' : '#f59e0b'}">Operate: ${stateOK ? 'reachable' : 'unknown/down'}</span> · ` +
+    `<span style="color:${d.admin_status === 'active' ? '#10b981' : '#f59e0b'}">Admin: ${escapeHtml(d.admin_status || '')}</span>` +
+    (d.side ? `<br/>Service side: <b>${escapeHtml(d.side)}</b>` : "");
+}
+
+function linkTooltip(l) {
+  if (l.kind === "tun-a-leg") {
+    const frr = l.frr ? `<span style="color:#10b981">FRR enabled</span>` : `<span style="color:#94a3b8">no FRR</span>`;
+    return `<b>${escapeHtml(l.ne_name)} originates tunnel-id ${escapeHtml(String(l.tunnel_id))}</b><br/>` +
+      `Source IP: <code>${escapeHtml(l.source_ip)}</code> (PE loopback)<br/>` +
+      `Role at this end: <b>${escapeHtml(l.protect_role || 'work')}</b> · admin ${escapeHtml(l.admin_state || '—')} · ${frr}`;
+  }
+  if (l.kind === "tun-z-leg") {
+    const frr = l.frr ? `<span style="color:#10b981">FRR enabled</span>` : `<span style="color:#94a3b8">no FRR</span>`;
+    return `<b>${escapeHtml(l.ne_name)} terminates tunnel-id ${escapeHtml(String(l.tunnel_id))}</b><br/>` +
+      `Destination IP: <code>${escapeHtml(l.destination_ip)}</code> (PE loopback)<br/>` +
+      `Role at this end: <b>${escapeHtml(l.protect_role || 'work')}</b> · admin ${escapeHtml(l.admin_state || '—')} · ${frr}`;
+  }
+  if (l.kind === "gpon-uplink") {
+    return `<b>OLT GPON port — ${escapeHtml(l.port_name || 'unknown')}</b><br/>` +
+      `Frame ${escapeHtml(String(l.frame_id))} · Slot ${escapeHtml(String(l.slot_id))} · Port ${escapeHtml(String(l.port_id))} on <b>${escapeHtml(l.olt_name)}</b><br/>` +
+      `<span style="color:#94a3b8">Headend optical interface that drives the customer's GPON fibre.</span>`;
+  }
+  if (l.kind === "gpon-fibre") {
+    return `<b>GPON fibre to customer ONT</b><br/>` +
+      `GEM port: <b>${escapeHtml(String(l.gem_port))}</b>  ·  ` +
+      `ONT-id: <b>${escapeHtml(String(l.ont_id))}</b>  ·  ` +
+      `ETH port on ONT: <b>${escapeHtml(String(l.ont_eth_port || '—'))}</b><br/>` +
+      `Tagging: S-VLAN <b>${escapeHtml(String(l.s_vlan))}</b>` +
+      (l.s_inner_vlan ? ` · S-inner ${escapeHtml(String(l.s_inner_vlan))}` : "") +
+      ` · U-VLAN <b>${escapeHtml(String(l.user_vlan))}</b><br/>` +
+      `Traffic templates: up <code>${escapeHtml(l.up_traffic_tpl)}</code>, down <code>${escapeHtml(l.down_traffic_tpl)}</code>` +
+      (l.ont_range_m ? `<br/><span style="color:#94a3b8">Fibre distance OLT→ONT: ${escapeHtml(String(l.ont_range_m))} m</span>` : "");
+  }
+  if (l.kind === "gpon-cpe") {
+    return `<b>Customer-premises attachment</b><br/>` +
+      `Connects ONT <b>${escapeHtml(l.ont_name || '—')}</b> to subscriber <b>${escapeHtml(l.customer_id || '—')}</b><br/>` +
+      `Product: ${escapeHtml(l.product_tag || '—')} · ISP-ref: ${escapeHtml(l.isp_ref || '—')}`;
+  }
+  if (l.kind === "vrf-mesh") {
+    const topoLabel = (l.topo || "").toLowerCase().includes("hub") ? "hub-and-spoke" : "full-mesh";
+    return `<b>MP-BGP — ${escapeHtml(topoLabel)}</b><br/>` +
+      `Routes for service <b>${escapeHtml(l.service_name)}</b> are exchanged between these two VRFs via MP-BGP (typically through route reflectors).<br/>` +
+      `<span style="color:#94a3b8">The actual peering session runs over the underlay; this line represents the logical RT-driven route distribution.</span>`;
+  }
+  if (l.kind === "vrf-attach") {
+    return `<b>${escapeHtml(l.ne_name)} joins ${escapeHtml(l.service_name)}</b><br/>` +
+      `Via VRF on this PE (RD <code>${escapeHtml(l.rd || '—')}</code>).<br/>` +
+      `<span style="color:#10b981">Export RT:</span> ${escapeHtml(l.export_rts || '—')}<br/>` +
+      `<span style="color:#0ea5e9">Import RT:</span> ${escapeHtml(l.import_rts || '—')}` +
+      (l.vrf_role ? `<br/><span style="color:#94a3b8">Role in service: <b>${escapeHtml(l.vrf_role)}</b></span>` : "");
+  }
+  if (l.kind === "pw-mesh") {
+    return `<b>VPLS pseudowire (logical mesh)</b><br/>` +
+      `Carries customer Ethernet frames between two PEs participating in <b>${escapeHtml(l.service_name)}</b>.<br/>` +
+      `<span style="color:#94a3b8">Topology: ${escapeHtml(l.topo_type || 'Any2Any')} · service has ${escapeHtml(String(l.pw_count_total || '—'))} pseudowire records in the dump.</span><br/>` +
+      `<span style="color:#94a3b8">Peer loopbacks are virtual / anycast (DNI-PW), so individual pw-id ↔ physical-PE mapping isn't directly available from inventory.</span>`;
+  }
+  if (l.kind === "vsi-attach") {
+    return `<b>${escapeHtml(l.ne_name)} joins ${escapeHtml(l.service_name)}</b><br/>` +
+      `Via local Virtual Switch Instance <b>VSI ${escapeHtml(String(l.vsi_id || '—'))}</b><br/>` +
+      `<span style="color:#94a3b8">${escapeHtml(l.vsi_signal || 'ldp')}-signalled · state ${escapeHtml(l.vsi_state || 'unknown')}</span>`;
+  }
+  if (l.kind === "sap-attach") {
+    const trunkDesc = l.trunk_is_lag ? "Eth-Trunk (Link Aggregation Group)" : "Physical Ethernet trunk";
+    const bw = l.trunk_bandwidth ? (Number(l.trunk_bandwidth) / 1000).toFixed(0) + " Mbps" : "";
+    const v4 = (l.sap_ipv4 || []).join(", ");
+    const v6 = (l.sap_ipv6 || []).join(", ");
+    const pathStyle = l.pwt_role === "protect" ? "#f59e0b" : "#2563eb";
+    return `<b>${escapeHtml(l.sap_side)} attachment on ${escapeHtml(l.ne_name)}</b><br/>` +
+      `<span style="color:${pathStyle}">${escapeHtml((l.pwt_role || 'work').toUpperCase())} path</span> of service <b>${escapeHtml(l.service_name)}</b><br/>` +
+      `<div style="margin-top:4px"><b>Trunk port:</b> ${escapeHtml(l.trunk_name)} <span style="color:#94a3b8">(${escapeHtml(trunkDesc)}${bw ? ' · ' + escapeHtml(bw) : ''}${l.trunk_mtu ? ' · MTU ' + escapeHtml(String(l.trunk_mtu)) : ''})</span></div>` +
+      `<div><b>Sub-interface:</b> ${escapeHtml(l.sub_name)} <span style="color:#94a3b8">(VLAN <b style="color:#fbbf24">${escapeHtml(l.vlan)}</b>${l.sub_mtu ? ' · MTU ' + escapeHtml(String(l.sub_mtu)) : ''})</span></div>` +
+      `<div><b>SAP state:</b> <span style="color:${l.sap_admin_state === 'active' ? '#10b981' : '#f59e0b'}">${escapeHtml(l.sap_admin_state || 'unknown')}</span> · binding ${escapeHtml(l.sap_binding || 'PWE3')}</div>` +
+      (v4 || v6 ? `<div style="color:#94a3b8">IP: ${escapeHtml(v4 || '—')}${v6 ? ' · v6 ' + escapeHtml(v6) : ''}</div>` : "");
+  }
+  const a = l.portA ? shortPort(l.portA) : "";
+  const z = l.portZ ? shortPort(l.portZ) : "";
+  return `<b>${escapeHtml(l.type)}</b>${l.name ? ' — ' + escapeHtml(l.name) : ''}<br/>` +
+    (a ? `A: <code>${escapeHtml(a)}</code><br/>` : "") +
+    (z ? `Z: <code>${escapeHtml(z)}</code><br/>` : "") +
+    (l.bandwidth ? `Bandwidth: ${(l.bandwidth/1000).toFixed(0)} Mbps` : "");
+}
+
+function escapeHtml(v) {
+  return String(v == null ? "" : v).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// L2VPN service dashboard (ported verbatim; retained for completeness — the
+// l2vpn view renders the stacked-rows graph, same as the D3 build).
+// ───────────────────────────────────────────────────────────────────────
+function renderL2VpnDashboard(payload) {
+  const aside = document.querySelector("aside");
+  const graphEl = document.getElementById("graph");
+  const app = document.getElementById("app");
+  if (aside) aside.style.display = "none";
+  if (graphEl) graphEl.style.display = "none";
+  if (app) { app.style.gridTemplateColumns = "0 1fr"; app.style.display = "block"; }
+  const dash = document.getElementById("l2vpn-dash");
+  if (!dash) {
+    document.body.innerHTML = "<pre style='padding:20px;color:#b91c1c'>#l2vpn-dash element missing in HTML — re-download index.html</pre>";
+    return;
+  }
+  dash.classList.add("active");
+  dash.style.cssText = "display:block;position:fixed;inset:0;overflow:auto;padding:20px;background:#f8fafc;z-index:9999";
+  const banner = `<div style="background:#dcfce7;color:#166534;padding:8px 12px;border-radius:6px;margin-bottom:12px;font-family:ui-monospace,monospace;font-size:12px">
+    ✓ L2VPN view loaded. Payload received: service=${payload && payload.service ? "yes" : "NO"},
+    endpoints=${payload && payload.endpoints ? payload.endpoints.length : 0},
+    transport=${payload && payload.transport ? payload.transport.length : 0},
+    topology-nodes=${payload && payload.topology && payload.topology.nodes ? payload.topology.nodes.length : 0}.
+  </div>`;
+  if (!payload || !payload.service) {
+    dash.innerHTML = banner + "<p style='padding:24px;color:#b91c1c'>L2VPN payload missing — run <code>python build_d3.py</code> then hard-reload (Ctrl+F5).</p>";
+    return;
+  }
+  let html = "";
+  try {
+    html = buildDashHtml(payload);
+  } catch (err) {
+    dash.innerHTML = banner + `<pre style='padding:24px;color:#b91c1c;white-space:pre-wrap;background:#fff'>L2VPN render error: ${escapeHtml(err.message)}\n${escapeHtml(err.stack || '')}</pre>`;
+    console.error("renderL2VpnDashboard:", err);
+    return;
+  }
+  dash.innerHTML = banner + html;
+}
+
+function buildDashHtml(payload) {
+  const s = payload.service;
+  const isActive = (s.active_state || "").includes("active");
+  const isProtected = (s.protection || "").toLowerCase().includes("redundancy");
+  const headerHtml = `
+    <div class="svc-header">
+      <div>
+        <h1>${escapeHtml(s.name)}  <span class="badge ${isActive ? 'ok' : 'warn'}">${escapeHtml(s.active_state || 'unknown')}</span>
+          <span class="badge ${isProtected ? 'info' : 'warn'}">${escapeHtml(s.protection)}</span>
+          <span class="badge proto">${escapeHtml(s.signal_type)}</span>
+        </h1>
+        <div class="svc-sub">${escapeHtml(s.type)} · ${escapeHtml(s.topology_shape)} · service-id <code>${escapeHtml(s.id)}</code></div>
+        <div class="attr-grid">
+          <div><span class="k">Service Type</span><span class="v">${escapeHtml(s.service_type)}</span></div>
+          <div><span class="k">Direction</span><span class="v">${escapeHtml(s.direction)}</span></div>
+          <div><span class="k">Admin / Enable</span><span class="v">${escapeHtml(s.enable_state)}</span></div>
+          <div><span class="k">Operational</span><span class="v">${escapeHtml(s.active_state)}</span></div>
+          <div><span class="k">Creator</span><span class="v">${escapeHtml(s.creator)}</span></div>
+          <div><span class="k">Created</span><span class="v">${escapeHtml((s.created || '').slice(0,10))}</span></div>
+          <div><span class="k">Last Modified</span><span class="v">${escapeHtml((s.last_modified || '').slice(0,10))}</span></div>
+        </div>
+      </div>
+    </div>`;
+  const n0 = (payload.topology && payload.topology.nodes && payload.topology.nodes[0]) || null;
+  const n1 = (payload.topology && payload.topology.nodes && payload.topology.nodes[1]) || null;
+  const lk0 = (payload.topology && payload.topology.links && payload.topology.links[0]) || {};
+  const miniMapHtml = `
+    <div class="mini-map">
+      <h2>Service Path</h2>
+      <div style="position:relative;height:220px">
+        <div style="position:absolute;top:90px;left:18%;right:18%;height:0;border-top:3px dashed #dc2626"></div>
+        <div style="position:absolute;top:55px;left:0;right:0;text-align:center;color:#dc2626;font-weight:700;font-size:12px">PWE3 ${escapeHtml(s.name)}</div>
+        <div style="position:absolute;top:72px;left:0;right:0;text-align:center;color:#7c2d12;font-size:10px">${escapeHtml(s.signal_type)} · ${escapeHtml(s.protection)}</div>
+        ${n0 ? `
+          <div style="position:absolute;top:80px;left:60px;width:120px;text-align:center">
+            ${n0.icon ? `<img src="${escapeHtml(n0.icon)}" alt="" style="width:64px;height:64px"/>` : `<div style="width:64px;height:64px;margin:auto;background:#cbd5e1"></div>`}
+            <div style="font-weight:700;font-size:12px;margin-top:4px">${escapeHtml(n0.name)}</div>
+            <div style="color:#1d4ed8;font-size:11px">${escapeHtml(n0.ip)}</div>
+            <div style="color:#16a34a;font-size:10px">${escapeHtml(shortPort(lk0.portA))}</div>
+          </div>` : ""}
+        ${n1 ? `
+          <div style="position:absolute;top:80px;right:60px;width:120px;text-align:center">
+            ${n1.icon ? `<img src="${escapeHtml(n1.icon)}" alt="" style="width:64px;height:64px"/>` : `<div style="width:64px;height:64px;margin:auto;background:#cbd5e1"></div>`}
+            <div style="font-weight:700;font-size:12px;margin-top:4px">${escapeHtml(n1.name)}</div>
+            <div style="color:#1d4ed8;font-size:11px">${escapeHtml(n1.ip)}</div>
+            <div style="color:#16a34a;font-size:10px">${escapeHtml(shortPort(lk0.portZ))}</div>
+          </div>` : ""}
+      </div>
+    </div>`;
+  const transportRows = (payload.transport || []).map(t => `
+    <tr class="${t.role === 'protect' ? 'protect' : ''}">
+      <td><b>${escapeHtml(t.role)}</b><br/><span style="color:#64748b">${escapeHtml(t.active_state)}</span></td>
+      <td><div class="pill-list"><span class="pill">A pw-id ${escapeHtml(String(t.a_pw_label))}</span><span class="pill">peer ${escapeHtml(t.a_peer_ip)}</span><span class="pill">${escapeHtml(t.a_pw_type)}</span></div></td>
+      <td><div class="pill-list"><span class="pill">Z pw-id ${escapeHtml(String(t.z_pw_label))}</span><span class="pill">peer ${escapeHtml(t.z_peer_ip)}</span><span class="pill">${escapeHtml(t.z_pw_type)}</span></div></td>
+      <td>${t.tunnels.length === 0 ? "<i style='color:#94a3b8'>none referenced</i>" :
+        t.tunnels.map(tn => `<div style='margin-bottom:4px'><span class='pill'>${escapeHtml(tn.signal)}</span> <code>${escapeHtml(tn.name)}</code><br/><small style='color:#64748b'>${escapeHtml(tn.source_ip)} → ${escapeHtml(tn.destination_ip)} · tunnel-id ${escapeHtml(String(tn.tunnel_id))}</small></div>`).join("")}</td>
+    </tr>`).join("");
+  const transportHtml = `
+    <div class="card" style="margin-top:16px">
+      <h2>Underlying Transport (Pseudowires + MPLS Tunnels)</h2>
+      ${transportRows ? `
+      <table class="transport-table">
+        <thead><tr><th>Path</th><th>A-end PW</th><th>Z-end PW</th><th>Tunnel(s)</th></tr></thead>
+        <tbody>${transportRows}</tbody>
+      </table>` : "<p style='color:#64748b'>No PW trail records linked to this service.</p>"}
+    </div>`;
+  return headerHtml +
+    `<div class="body-grid">` +
+      ((payload.endpoints && payload.endpoints[0]) ? endpointCardHtml(payload.endpoints[0]) : "") +
+      miniMapHtml +
+      ((payload.endpoints && payload.endpoints[1]) ? endpointCardHtml(payload.endpoints[1]) : "") +
+    `</div>` +
+    transportHtml;
+}
+
+function endpointCardHtml(ep) {
+  const ne = ep.ne || {};
+  const sapId = (ep.sap_id || "");
+  const iconImg = ne.icon
+    ? `<img src="${escapeHtml(ne.icon)}" alt="${escapeHtml(ne.role || '')}" style="width:36px;height:36px"/>`
+    : `<div style="width:36px;height:36px;background:#cbd5e1;border-radius:4px"></div>`;
+  return `
+    <div class="card endpoint-card">
+      <h2>${escapeHtml(ep.label || 'Endpoint')}</h2>
+      <div class="ne-header">
+        ${iconImg}
+        <div>
+          <div class="ne-name">${escapeHtml(ne.name || '')} <span class="ne-role">${escapeHtml(ne.role || '')}</span></div>
+          <div style="color:#64748b;font-size:11px">${escapeHtml(ne.product || '')} · ${escapeHtml(ne.ip || '')}</div>
+        </div>
+      </div>
+      <div class="attr-grid" style="margin-top:6px">
+        <div><span class="k">Port</span><span class="v">${escapeHtml(shortPort(ep.port))}</span></div>
+        <div><span class="k">SAP</span><span class="v">${escapeHtml(sapId ? sapId.slice(0,8) + '…' : '—')}</span></div>
+        <div><span class="k">SAP State</span><span class="v">${escapeHtml(ep.sap_admin_state || '')}</span></div>
+        <div><span class="k">Binding</span><span class="v">${escapeHtml(ep.service_type_binding || '')}</span></div>
+        <div><span class="k">Region</span><span class="v">${escapeHtml(ne.region || '')}</span></div>
+        <div><span class="k">LSR-ID</span><span class="v">${escapeHtml(ne.lsr_id || '')}</span></div>
+        <div><span class="k">Software</span><span class="v">${escapeHtml(ne.software || '')}</span></div>
+        <div><span class="k">Location</span><span class="v">${escapeHtml(ne.location || '')}</span></div>
+      </div>
+    </div>`;
+}
+
+// ───────────────────────────────────────────────────────────────────────
+// Geo Map view — AntV L7 (unchanged from the D3 build; uses its own DOM
+// tooltip via showTip / hideTip).
+// ───────────────────────────────────────────────────────────────────────
+function renderGeoMap(payload) {
+  try { document.getElementById("graph").style.display = "none"; } catch (e) {}
+  const dash = document.getElementById("l2vpn-dash"); if (dash) dash.classList.remove("active");
+  const geoEl = document.getElementById("geo-map");
+  geoEl.classList.add("active");
+
+  if (!payload || !payload.nodes) {
+    geoEl.innerHTML = "<p style='padding:24px;color:#fca5a5;font-family:ui-monospace,monospace'>topology-geo.js missing — run <code>python assign_geo.py</code> then reload.</p>";
+    return;
+  }
+
+  const _L7 = typeof L7 !== "undefined" ? L7 : null;
+  const _L7Maps = (typeof L7Maps !== "undefined") ? L7Maps :
+                  (_L7 && _L7.Map ? _L7ParseMaps(_L7) : null);
+  function _L7ParseMaps(ns) { return { Map: ns.Map, GaodeMap: ns.GaodeMap, Mapbox: ns.Mapbox }; }
+  console.log("[geo] L7 =", _L7, "L7Maps =", _L7Maps);
+  if (!_L7 || !_L7Maps || !_L7Maps.Map) {
+    geoEl.insertAdjacentHTML("afterbegin",
+      "<pre style='padding:24px;color:#fca5a5;font-family:ui-monospace,monospace'>" +
+      "AntV L7 CDN not loaded.\n" +
+      "  typeof L7      = " + (typeof L7) + "\n" +
+      "  typeof L7Maps  = " + (typeof L7Maps) + "\n" +
+      "Hard-reload the page (Ctrl+F5) — if it persists, check the\n" +
+      "Network tab for failed /unpkg.com/ requests.</pre>");
+    return;
+  }
+  window.__L7 = _L7; window.__L7Maps = _L7Maps;
+
+  const scene = new _L7.Scene({
+    id: "geo-map",
+    logoVisible: false,
+    map: new _L7Maps.Map({
+      center: [78.96, 22.5],
+      zoom: 4.5,
+      pitch: 0,
+      style: "light",
+    }),
+  });
+
+  const ROLE_COLOR = { CORE: "#2563eb", AGG: "#7c3aed", OLT: "#0ea5e9" };
+  const ROLE_SIZE  = { CORE: 12,        AGG: 8,         OLT: 5         };
+
+  scene.on("loaded", () => {
+    const baseTileLayer = new _L7.RasterLayer({ zIndex: 0 })
+      .source(
+        "https://a.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}.png",
+        { parser: { type: "rasterTile", tileSize: 256, zoomOffset: 0,
+                    extent: [-180, -85.051129, 180, 85.051129] } }
+      );
+    scene.addLayer(baseTileLayer);
+
+    const lineLayer = new _L7.LineLayer({ zIndex: 1 })
+      .source({ type: "FeatureCollection", features: payload.links.map(l => ({
+        type: "Feature",
+        properties: { type: l.type, name: l.name },
+        geometry: { type: "LineString", coordinates: l.coords },
+      })) })
+      .size(0.6)
+      .color("type", ["#2563eb","#d97706","#111111"])
+      .style({ opacity: 0.45 });
+    scene.addLayer(lineLayer);
+
+    const sortedNodes = [...payload.nodes].sort(
+      (a, b) => (ROLE_SIZE[b.role] || 0) - (ROLE_SIZE[a.role] || 0)
+    );
+    const pointLayer = new _L7.PointLayer({ zIndex: 5 })
+      .source(sortedNodes, { parser: { type: "json", x: "lon", y: "lat" } })
+      .shape("circle")
+      .color("role", (r) => ROLE_COLOR[r] || "#94a3b8")
+      .size("role", (r) => ROLE_SIZE[r] || 5)
+      .style({ opacity: 0.85, stroke: "#ffffff", strokeWidth: 1, strokeOpacity: 0.95 })
+      .active({ color: "#fbbf24" });
+    scene.addLayer(pointLayer);
+
+    const coreNodes = payload.nodes.filter(n => n.role === "CORE");
+    const labelLayer = new _L7.PointLayer({ zIndex: 6, name: "labels" })
+      .source(coreNodes, { parser: { type: "json", x: "lon", y: "lat" } })
+      .shape("name", "text")
+      .size(11)
+      .color("#0f172a")
+      .style({ textAnchor: "top", textOffset: [0, 14], stroke: "#ffffff", strokeWidth: 2.5, fontWeight: "700", opacity: 0.95 });
+    scene.addLayer(labelLayer);
+
+    let cursor = { x: 0, y: 0 };
+    document.addEventListener("mousemove", e => { cursor = { x: e.clientX, y: e.clientY }; });
+
+    function getCursor(e) {
+      if (e && typeof e.clientX === "number") return { x: e.clientX, y: e.clientY };
+      if (e && e.originalEvent && typeof e.originalEvent.clientX === "number")
+        return { x: e.originalEvent.clientX, y: e.originalEvent.clientY };
+      return cursor;
+    }
+    function pointTipHtml(f) {
+      const ipLine = f.ip
+        ? `Management IP: <b>${escapeHtml(f.ip)}</b>` +
+          (f.lsr_id && f.lsr_id !== f.ip ? ` · Loopback: <b>${escapeHtml(f.lsr_id)}</b>` : "")
+        : "";
+      return `<b>${escapeHtml(f.name)}</b><br/>` +
+        `<span style="color:#fbbf24">${escapeHtml(f.role)} — ${escapeHtml(f.product)}</span><br/>` +
+        (ipLine ? ipLine + "<br/>" : "") +
+        `Site code: <b>${escapeHtml(f.site || '—')}</b><br/>` +
+        `Area: <b>${escapeHtml(f.area || '—')}</b><br/>` +
+        `City: ${escapeHtml(f.city || '—')} · District: ${escapeHtml(f.district || '—')}<br/>` +
+        `State: <b>${escapeHtml(f.state || '—')}</b> · Region: ${escapeHtml(f.region || '—')}<br/>` +
+        `<span style="color:#94a3b8">lat ${f.lat}, lon ${f.lon}</span>`;
+    }
+    function linkTipHtml(p) {
+      return `<b>${escapeHtml(p.type || 'link')}</b>${p.name ? ' — ' + escapeHtml(p.name) : ''}`;
+    }
+    function bindHoverHandlers() {
+      ["mousemove","mouseenter","mouseup"].forEach(evt => {
+        pointLayer.on(evt, (e) => {
+          const f = e && e.feature;
+          if (!f) return;
+          const c = getCursor(e);
+          showTip({ clientX: c.x, clientY: c.y }, pointTipHtml(f));
+        });
+      });
+      pointLayer.on("mouseout",  hideTip);
+      pointLayer.on("unmouse",   hideTip);
+      ["mousemove","mouseenter"].forEach(evt => {
+        lineLayer.on(evt, (e) => {
+          const p = e && e.feature && e.feature.properties;
+          if (!p) return;
+          const c = getCursor(e);
+          showTip({ clientX: c.x, clientY: c.y }, linkTipHtml(p));
+        });
+      });
+      lineLayer.on("mouseout", hideTip);
+      lineLayer.on("unmouse",  hideTip);
+    }
+    bindHoverHandlers();
+    console.log("[geo] hover handlers bound on point + line layers");
+
+    const activeRoles = new Set(["CORE", "AGG", "OLT"]);
+    let stateFilter = "";
+
+    const countByRole = sortedNodes.reduce((m, n) => (m[n.role] = (m[n.role] || 0) + 1, m), {});
+    for (const role of ["CORE","AGG","OLT"]) {
+      const el = document.getElementById(`cnt-${role}`);
+      if (el) el.textContent = (countByRole[role] || 0).toLocaleString();
+    }
+    const stateSel = document.getElementById("geo-state-filter");
+    const stateCounts = sortedNodes.reduce((m, n) => (m[n.state] = (m[n.state] || 0) + 1, m), {});
+    for (const [state, n] of Object.entries(stateCounts).sort((a,b)=>b[1]-a[1])) {
+      if (!state) continue;
+      const o = document.createElement("option");
+      o.value = state; o.textContent = `${state}  (${n.toLocaleString()})`;
+      stateSel.appendChild(o);
+    }
+
+    function recompute() {
+      const ptFiltered = sortedNodes.filter(n =>
+        activeRoles.has(n.role) && (!stateFilter || n.state === stateFilter)
+      );
+      const ptIds = new Set(ptFiltered.map(n => n.id));
+      pointLayer.setData(ptFiltered, { parser: { type: "json", x: "lon", y: "lat" } });
+      const coreFiltered = ptFiltered.filter(n => n.role === "CORE");
+      labelLayer.setData(coreFiltered, { parser: { type: "json", x: "lon", y: "lat" } });
+      const lnFiltered = payload.links.filter(l => ptIds.has(l.source) && ptIds.has(l.target));
+      lineLayer.setData({
+        type: "FeatureCollection",
+        features: lnFiltered.map(l => ({
+          type: "Feature",
+          properties: { type: l.type, name: l.name },
+          geometry: { type: "LineString", coordinates: l.coords },
+        })),
+      });
+      bindHoverHandlers();
+    }
+    document.querySelectorAll("#geo-filters input[data-role]").forEach(cb => {
+      cb.addEventListener("change", e => {
+        if (e.target.checked) activeRoles.add(e.target.dataset.role);
+        else activeRoles.delete(e.target.dataset.role);
+        recompute();
+      });
+    });
+    stateSel.addEventListener("change", e => { stateFilter = e.target.value; recompute(); });
+    document.getElementById("show-labels").addEventListener("change", e => {
+      if (e.target.checked) labelLayer.show(); else labelLayer.hide();
+    });
+    document.getElementById("show-links").addEventListener("change", e => {
+      if (e.target.checked) lineLayer.show(); else lineLayer.hide();
+    });
+
+    const searchInput = document.getElementById("geo-search");
+    const searchList  = document.getElementById("geo-search-list");
+    const searchMsg   = document.getElementById("geo-search-msg");
+    const seen = new Set();
+    for (const n of sortedNodes) {
+      for (const key of [n.name, n.ip, n.site]) {
+        if (!key || seen.has(key)) continue;
+        seen.add(key);
+        const o = document.createElement("option");
+        o.value = key;
+        searchList.appendChild(o);
+      }
+    }
+    function findNode(q) {
+      if (!q) return null;
+      const needle = q.trim().toLowerCase();
+      for (const n of sortedNodes) {
+        if ((n.name || "").toLowerCase() === needle ||
+            (n.ip   || "").toLowerCase() === needle ||
+            (n.site || "").toLowerCase() === needle) return n;
+      }
+      for (const n of sortedNodes) {
+        if ((n.name || "").toLowerCase().includes(needle) ||
+            (n.ip   || "").toLowerCase().includes(needle) ||
+            (n.site || "").toLowerCase().includes(needle)) return n;
+      }
+      return null;
+    }
+    function panZoomToNode(n) {
+      const map = scene.map;
+      if (map && typeof map.flyTo === "function") {
+        map.flyTo({ center: [n.lon, n.lat], zoom: 11, duration: 1500 });
+      } else if (map && typeof map.setCenter === "function") {
+        map.setCenter([n.lon, n.lat]);
+        if (typeof map.setZoom === "function") map.setZoom(11);
+      } else {
+        scene.setCenter([n.lon, n.lat]);
+        scene.setZoom(11);
+      }
+      searchMsg.innerHTML = `✓ Centred on <b>${escapeHtml(n.name)}</b> · ${escapeHtml(n.role)} · ${escapeHtml(n.city)}`;
+    }
+    function runSearch() {
+      const q = searchInput.value;
+      if (!q.trim()) { searchMsg.textContent = ""; return; }
+      const n = findNode(q);
+      if (!n) { searchMsg.textContent = "✗ no match"; return; }
+      panZoomToNode(n);
+    }
+    searchInput.addEventListener("change", runSearch);
+    searchInput.addEventListener("keydown", e => { if (e.key === "Enter") runSearch(); });
+  });
+}
+
+function showTip(e, html) {
+  const t = document.getElementById("tip");
+  if (!t) return;
+  t.innerHTML = html;
+  t.style.left = (e.clientX - 240 + 14) + "px";
+  t.style.top  = (e.clientY + 14) + "px";
+  t.style.opacity = 1;
+}
+function hideTip() {
+  const t = document.getElementById("tip");
+  if (t) t.style.opacity = 0;
+}
+</script>
+</body>
+</html>

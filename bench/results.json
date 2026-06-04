@@ -1,0 +1,133 @@
+{
+  "windowMs": 20000,
+  "ranAt": "2026-06-04T06:35:03Z",
+  "results": [
+    {
+      "engine": "d3",
+      "view": "core",
+      "navErr": null,
+      "peakHeapMB": 13.1,
+      "finalHeapMB": 8.7,
+      "scriptCpuS": 1.22,
+      "taskCpuS": 3.21,
+      "layoutCount": 441,
+      "domNodesFinal": 3542,
+      "jsListeners": 1258,
+      "respMs": 1,
+      "frozen": false,
+      "inPage": {
+        "svgImages": 165,
+        "canvases": 0,
+        "domNodes": 1907,
+        "fcpMs": 1200,
+        "blockingMs": 56,
+        "longTasks": 1
+      }
+    },
+    {
+      "engine": "d3",
+      "view": "e2e",
+      "navErr": null,
+      "peakHeapMB": 51.3,
+      "finalHeapMB": 11.3,
+      "scriptCpuS": 5.4,
+      "taskCpuS": 13.52,
+      "layoutCount": 441,
+      "domNodesFinal": 10767,
+      "jsListeners": 5106,
+      "respMs": 2,
+      "frozen": false,
+      "inPage": {
+        "svgImages": 846,
+        "canvases": 0,
+        "domNodes": 6999,
+        "fcpMs": 5260,
+        "blockingMs": 991,
+        "longTasks": 15
+      }
+    },
+    {
+      "engine": "d3",
+      "view": "full",
+      "navErr": null,
+      "peakHeapMB": 58.1,
+      "finalHeapMB": 12.6,
+      "scriptCpuS": 7.44,
+      "taskCpuS": 20.19,
+      "layoutCount": 103,
+      "domNodesFinal": 69254,
+      "jsListeners": 26801,
+      "respMs": 180,
+      "frozen": false,
+      "inPage": {
+        "svgImages": 4374,
+        "canvases": 0,
+        "domNodes": 38820,
+        "fcpMs": 1816,
+        "blockingMs": 21439,
+        "longTasks": 111
+      }
+    },
+    {
+      "engine": "g6",
+      "view": "core",
+      "navErr": null,
+      "peakHeapMB": 152.3,
+      "finalHeapMB": 78.2,
+      "scriptCpuS": 17.79,
+      "taskCpuS": 20.15,
+      "layoutCount": 0,
+      "domNodesFinal": 1207,
+      "jsListeners": 375,
+      "respMs": 30,
+      "frozen": false,
+      "inPage": {
+        "svgImages": 0,
+        "canvases": 4,
+        "domNodes": 347,
+        "fcpMs": 4080,
+        "blockingMs": 3691,
+        "longTasks": 42
+      }
+    },
+    {
+      "engine": "g6",
+      "view": "e2e",
+      "navErr": null,
+      "peakHeapMB": 250.7,
+      "finalHeapMB": 236.8,
+      "scriptCpuS": 15.53,
+      "taskCpuS": 20.07,
+      "layoutCount": 0,
+      "domNodesFinal": 641,
+      "jsListeners": 1741,
+      "respMs": 119,
+      "frozen": false,
+      "inPage": {
+        "svgImages": 0,
+        "canvases": 4,
+        "domNodes": 233,
+        "fcpMs": 9840,
+        "blockingMs": 27106,
+        "longTasks": 60
+      }
+    },
+    {
+      "engine": "g6",
+      "view": "full",
+      "navErr": "Navigation timeout of 60000 ms exceeded",
+      "peakHeapMB": 304.4,
+      "finalHeapMB": 278.5,
+      "scriptCpuS": 20.1,
+      "taskCpuS": 20.1,
+      "layoutCount": 0,
+      "domNodesFinal": 15977,
+      "jsListeners": 8801,
+      "respMs": null,
+      "frozen": true,
+      "inPage": {
+        "unresponsive": true
+      }
+    }
+  ]
+}
